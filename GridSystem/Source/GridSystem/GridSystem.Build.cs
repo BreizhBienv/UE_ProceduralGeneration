@@ -12,8 +12,8 @@ public class GridSystem : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
-        PublicIncludePaths.AddRange(
-        new string[] {
+        PublicIncludePaths.AddRange( new string[]
+        {
             "GridSystem/Generics/",
             "GridSystem/Grid/",
 

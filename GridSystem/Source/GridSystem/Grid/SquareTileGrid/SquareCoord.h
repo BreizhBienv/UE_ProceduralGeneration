@@ -12,12 +12,12 @@ struct GRIDSYSTEM_API FSquareCoord
 	GENERATED_BODY()
 
 	int32 _x = 0;
-	int32 _z = 0;
+	int32 _y = 0;
 
 #pragma region Constructor
 	FSquareCoord();
 
-	FSquareCoord(int32 pX, int32 pZ);
+	FSquareCoord(int32 pX, int32 pY);
 
 	FSquareCoord(const FSquareCoord& pOther);
 
@@ -27,16 +27,16 @@ struct GRIDSYSTEM_API FSquareCoord
 	FSquareCoord& operator=(const FSquareCoord& pOther)
 	{
 		_x = pOther._x;
-		_z = pOther._z;
+		_y = pOther._y;
 		return *this;
 	}
 
-	bool operator==(const FSquareCoord& pOther)
+	bool operator==(const FSquareCoord& pOther) const
 	{
-		return _x == pOther._x && _z == pOther._z;
+		return _x == pOther._x && _y == pOther._y;
 	}
 
-	bool operator!=(const FSquareCoord& pOther)
+	bool operator!=(const FSquareCoord& pOther) const
 	{
 		return !(*this == pOther);
 	}
