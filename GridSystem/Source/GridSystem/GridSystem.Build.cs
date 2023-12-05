@@ -16,6 +16,7 @@ public class GridSystem : ModuleRules
         {
             "GridSystem/Generics/",
             "GridSystem/Grid/",
+            "GridSystem/Algorithm/",
 
             // ... add public include paths required here ...
         });
