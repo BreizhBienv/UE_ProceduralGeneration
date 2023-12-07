@@ -39,9 +39,8 @@ void APerlinMapGenerator::DisplayMap()
 
 	// Create custom texture and retrieve raw image data
 	UTexture2D* CustomTexture = UTexture2D::CreateTransient(_mapWidth, _mapHeight);
-	FTexture2DMipMap* MipMap = &CustomTexture->GetPlatformData()->Mips[0];
-	FByteBulkData* ImageData = &MipMap->BulkData;
-	uint8* RawImageData = (uint8*)ImageData->Lock(LOCK_READ_WRITE);
+	uint8* RawImageData = static_cast<uint8*>(
+		CustomTexture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
 
 	for (auto [iColor, iData] = TPair<int32, int32>(0, 0);
 		iColor < _mapWidth * _mapHeight;
@@ -55,7 +54,7 @@ void APerlinMapGenerator::DisplayMap()
 		RawImageData[iData + 3] = color.A;
 	}
 
-	ImageData->Unlock();
+	CustomTexture->GetPlatformData()->Mips[0].BulkData.Unlock();
 	CustomTexture->UpdateResource();
 
 	TArray<UStaticMeshComponent*> components;
