@@ -13,11 +13,14 @@
 * Unreal Engine source code: File UnrealMath.cpp & UnrealMath.h
 * 
 **/
-class GRIDSYSTEM_API CustomPerlinNoise
+struct GRIDSYSTEM_API CustomPerlinNoise
 {
+
+#pragma region SampleGeneration
+
 	//Permutation table of Ken Perlin in his original implementation of the algorithm
 	//Table is also toubled to prevent overflow
-	const static int32 permutationTable[512];
+	static const int32 permutationTable[512];
 
 	/**
 	*	Curve w/ derivative (from 0 to 2) as per Ken Perlin's improved noise paper.
@@ -40,4 +43,29 @@ class GRIDSYSTEM_API CustomPerlinNoise
 	*	@return Perlin noise in the range -1.0 to 1.0 or 0 to 1.0.
 	**/
 	static float Noise2D(float pX, float pY, bool pChangeRange);
+
+#pragma endregion SampleGeneration
+
+#pragma region NoiseGeneration
+
+	/**
+	*	Sources: 
+	*	https://www.redblobgames.com/maps/terrain-from-noise/
+	*	https://www.youtube.com/playlist?list=PLFt_AvWsXl0eBW2EiBtl_sxmDtSgZBxB3
+	* 
+	**/
+
+	static int32 xRandRange;
+	static int32 yRandRange;
+
+	/**
+	* @param 1 & 2: Width and height of the texture in pixels.
+	* @param 3 & 4: The origin of the sampled area in the plane.
+	* @param 5:     The number of cycles of the basic noise pattern that are repeated over the width and height of the texture.
+	**/
+	static float** GenerateNoiseMap(
+		const int32 pMapWidth, const int32 pMapHeight, const int32 pSeed,  float pScale,
+		const int32 pOctaves, const float pPersistance, const float pLacunarity, FVector2f pOffset);
+
+#pragma endregion NoiseGeneration
 };

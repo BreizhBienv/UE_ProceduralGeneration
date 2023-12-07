@@ -3,7 +3,9 @@
 
 #include "CustomPerlinNoise.h"
 
-const int32 permutationTable[512] = {
+#pragma region SampleGeneration
+
+const int32 CustomPerlinNoise::permutationTable[512] = {
     151, 160, 137,  91,  90,  15, 131,  13, 201,  95,  96,  53, 194, 233,   7, 225,
     140,  36, 103,  30,  69, 142,   8,  99,  37, 240,  21,  10,  23, 190,   6, 148,
     247, 120, 234,  75,   0,  26, 197,  62,  94, 252, 219, 203, 117,  35,  11,  32,
@@ -76,6 +78,8 @@ float CustomPerlinNoise::Noise2D(float pX, float pY, bool pChangeRange)
     return pChangeRange ? (result + 1.0f) / 2.0f : result;
 }
 
+
+
 float CustomPerlinNoise::Fade(float p)
 {
     return p * p * p * (p * (p * 6 - 15) + 10);
@@ -96,3 +100,38 @@ float CustomPerlinNoise::Grad2D(int32 pHash, float pX, float pY)
     default:    return 0;
     }
 }
+#pragma region SampleGeneration
+
+#pragma region NoiseGeneration
+
+int32 xRandRange = 10000;
+int32 yRandRange = 10000;
+
+float** CustomPerlinNoise::GenerateNoiseMap(
+    const int32 pMapWidth, const int32 pMapHeight,
+    const int32 pSeed, float pScale, const int32 pOctaves,
+    const float pPersistance, const float pLacunarity, FVector2f pOffset)
+{
+    if (pScale <= 0)
+        pScale = 0.0001f;
+
+    float** noiseMap = new float*[pMapHeight];
+    for (int i = 0; i < pMapHeight; i++)
+        noiseMap[i] = new float[pMapWidth];
+
+    for (int y = 0; y < pMapHeight; ++y)
+    {
+        for (int x = 0; x < pMapWidth; ++x)
+        {
+            float sampleX = x / pScale;
+            float sampleY = y / pScale;
+
+            float perlinValue = Noise2D(sampleX, sampleY, true);
+            noiseMap[x][y] = perlinValue;
+        }
+    }
+
+    return noiseMap;
+}
+
+#pragma endregion NoiseGeneration
