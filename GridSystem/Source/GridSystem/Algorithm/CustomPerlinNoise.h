@@ -9,7 +9,6 @@
 * https://www.cs.umd.edu/class/spring2018/cmsc425/Lects/lect13-2d-perlin.pdf
 * https://en.wikipedia.org/wiki/Perlin_noise
 * https://rtouti.github.io/graphics/perlin-noise-algorithm
-* https://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=82687494240280B461582957FD77C7E8?doi=10.1.1.81.6401&rep=rep1&type=pdf
 * Unreal Engine source code: File UnrealMath.cpp & UnrealMath.h
 * 
 **/
@@ -23,7 +22,7 @@ struct GRIDSYSTEM_API CustomPerlinNoise
 	static const int32 permutationTable[512];
 
 	/**
-	*	Curve w/ derivative (from 0 to 2) as per Ken Perlin's improved noise paper.
+	*	Curve w/ derivatives (from 0 to 2) as per Ken Perlin's improved noise paper.
 	**/
 	static float Fade(float p);
 
@@ -63,7 +62,7 @@ struct GRIDSYSTEM_API CustomPerlinNoise
 	* @param 3 & 4: The origin of the sampled area in the plane.
 	* @param 5:     The number of cycles of the basic noise pattern that are repeated over the width and height of the texture.
 	**/
-	static float** GenerateNoiseMap(
+	static TArray<TArray<float>> GenerateNoiseMap(
 		const int32 pMapWidth, const int32 pMapHeight, const int32 pSeed,  float pScale,
 		const int32 pOctaves, const float pPersistance, const float pLacunarity, FVector2f pOffset);
 

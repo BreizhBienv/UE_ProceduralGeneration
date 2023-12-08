@@ -17,7 +17,7 @@ void APerlinMapGenerator::BeginPlay()
 
 void APerlinMapGenerator::DisplayMap()
 {
-	float** noiseMap = CustomPerlinNoise::GenerateNoiseMap(
+	TArray<TArray<float>> noiseMap = CustomPerlinNoise::GenerateNoiseMap(
 		_mapWidth, _mapHeight, _seed, _scale,
 		_octaves, _persistance, _lacunarity, _offset);
 

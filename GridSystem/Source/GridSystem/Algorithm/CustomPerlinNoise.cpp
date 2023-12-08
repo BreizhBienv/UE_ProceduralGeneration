@@ -41,48 +41,9 @@ const int32 CustomPerlinNoise::permutationTable[512] = {
     222, 114,  67,  29,  24,  72, 243, 141, 128, 195,  78,  66, 215,  61, 156, 180
 };
 
-float CustomPerlinNoise::Noise2D(float pX, float pY, bool pChangeRange)
-{
-    float xf = FMath::FloorToFloat(pX);
-    float yf = FMath::FloorToFloat(pY);
-
-    //Find unit cube that contains location
-    int32 Xi = (int32)xf & 255;
-    int32 Yi = (int32)yf & 255;
-
-    //Find Relative x, y of location in unit cube
-    float X = pX - xf;
-    float Y = pY - yf;
-
-    float Xm1 = X - 1;
-    float Ym1 = Y - 1;
-
-    //Comput fade curve for X and Y
-    float U = Fade(X);
-    float V = Fade(Y);
-
-    //Hash coord of the square's corners
-    //A = 0, B = 1
-    const int32 *P = permutationTable;
-    int32 AA = P[Xi] + Yi;      //BottomLeft
-    int32 AB = AA + 1;          //TopLeft
-    int32 BA = P[Xi + 1] + Yi;  //BottomRight
-    int32 BB = BA + 1;          //TopRight
-
-    //Blend result of coords hashing
-    float result = FMath::Lerp(
-        FMath::Lerp(Grad2D(P[AA], X, Y), Grad2D(P[BA], Xm1, Y), U),
-        FMath::Lerp(Grad2D(P[AB], X, Ym1), Grad2D(P[BB], Xm1, Ym1), U),
-        V);
-
-    return pChangeRange ? (result + 1.0f) / 2.0f : result;
-}
-
-
-
 float CustomPerlinNoise::Fade(float p)
 {
-    return p * p * p * (p * (p * 6 - 15) + 10);
+    return p * p * p * (p * (p * 6.f - 15.f) + 10.f);
 }
 
 float CustomPerlinNoise::Grad2D(int32 pHash, float pX, float pY)
@@ -100,6 +61,43 @@ float CustomPerlinNoise::Grad2D(int32 pHash, float pX, float pY)
     default:    return 0;
     }
 }
+
+float CustomPerlinNoise::Noise2D(float pX, float pY, bool pChangeRange)
+{
+    float xf = FMath::FloorToFloat(pX);
+    float yf = FMath::FloorToFloat(pY);
+
+    //Find unit cube that contains location
+    int32 xi = (int32)(xf) & 255;
+    int32 yi = (int32)(yf) & 255;
+
+    //Find Relative x, y of location in unit cube
+    float X = pX - xf;
+    float Y = pY - yf;
+
+    float Xm1 = X - 1.f;
+    float Ym1 = Y - 1.f;
+
+    //Comput fade curve for X and Y
+    float U = Fade(X);
+    float V = Fade(Y);
+
+    //Hash coord of the square's corners
+    //A = 0, B = 1
+    const int32 *P = permutationTable;
+    int32 AA = P[xi] + yi;      //BottomLeft
+    int32 AB = AA + 1;          //TopLeft
+    int32 BA = P[xi + 1] + yi;  //BottomRight
+    int32 BB = BA + 1;          //TopRight
+
+    //Blend result of coords hashing
+    float result = FMath::Lerp(
+        FMath::Lerp(Grad2D(P[AA], X, Y), Grad2D(P[BA], Xm1, Y), U),
+        FMath::Lerp(Grad2D(P[AB], X, Ym1), Grad2D(P[BB], Xm1, Ym1), U),
+        V);
+
+    return pChangeRange ? (result + 1.0f) / 2.0f : result;
+}
 #pragma region SampleGeneration
 
 #pragma region NoiseGeneration
@@ -107,7 +105,7 @@ float CustomPerlinNoise::Grad2D(int32 pHash, float pX, float pY)
 int32 xRandRange = 10000;
 int32 yRandRange = 10000;
 
-float** CustomPerlinNoise::GenerateNoiseMap(
+TArray<TArray<float>> CustomPerlinNoise::GenerateNoiseMap(
     const int32 pMapWidth, const int32 pMapHeight,
     const int32 pSeed, float pScale, const int32 pOctaves,
     const float pPersistance, const float pLacunarity, FVector2f pOffset)
@@ -115,9 +113,11 @@ float** CustomPerlinNoise::GenerateNoiseMap(
     if (pScale <= 0)
         pScale = 0.0001f;
 
-    float** noiseMap = new float*[pMapHeight];
-    for (int i = 0; i < pMapHeight; i++)
-        noiseMap[i] = new float[pMapWidth];
+    TArray<float> row;
+    row.Init(0, pMapWidth);
+
+    TArray<TArray<float>> noiseMap;
+    noiseMap.Init(TArray<float>(row), pMapHeight);
 
     for (int y = 0; y < pMapHeight; ++y)
     {
