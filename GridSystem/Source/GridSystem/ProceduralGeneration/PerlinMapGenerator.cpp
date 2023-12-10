@@ -28,10 +28,9 @@ void APerlinMapGenerator::DisplayMap()
 		{
 			float sample = noiseMap[x][y];
 
-			FColor color = FLinearColor::LerpUsingHSV(
-				FLinearColor::Black, FLinearColor::White, sample).ToFColor(true);
+			FLinearColor color = FMath::Lerp(FLinearColor::Black, FLinearColor::White, sample);
 
-			colorMap.Add(color);
+			colorMap.Add(color.ToFColor(false));
 		}
 	}
 

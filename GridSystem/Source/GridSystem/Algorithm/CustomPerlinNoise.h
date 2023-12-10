@@ -57,6 +57,8 @@ struct GRIDSYSTEM_API CustomPerlinNoise
 	static int32 xRandRange;
 	static int32 yRandRange;
 
+	static float InvLerp(float a, float b, float v);
+
 	/**
 	* @param 1 & 2: Width and height of the texture in pixels.
 	* @param 3 & 4: The origin of the sampled area in the plane.

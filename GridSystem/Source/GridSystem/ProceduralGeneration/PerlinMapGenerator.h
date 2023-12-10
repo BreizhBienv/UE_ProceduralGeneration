@@ -26,13 +26,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
 	int32 _seed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin",
+		meta = (ClampMin = "1", ClampMax = "8", UIMin = "1", UIMax = "8"))
 	int32 _octaves;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin",
+		meta = (ClampMin = "0", ClampMax = "1.0", UIMin = "0", UIMax = "1.0"))
 	float _persistance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin", 
+		meta = (ClampMin = "1.0", ClampMax = "8.0", UIMin = "1.0", UIMax = "8.0"))
 	float _lacunarity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
