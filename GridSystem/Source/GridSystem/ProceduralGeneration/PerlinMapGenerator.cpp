@@ -3,6 +3,7 @@
 
 #include "PerlinMapGenerator.h"
 #include "CustomPerlinNoise.h"
+#include "CustomSimplexNoise.h"
 #include "Engine/Texture2D.h"
 #include "Math/Color.h"
 
@@ -17,20 +18,16 @@ void APerlinMapGenerator::BeginPlay()
 
 void APerlinMapGenerator::DisplayMap()
 {
-	TArray<TArray<float>> noiseMap = CustomPerlinNoise::GenerateNoiseMap(
-		_mapWidth, _mapHeight, _seed, _scale,
-		_octaves, _persistance, _lacunarity, _offset);
+	TArray<float> noiseMap = GetNoiseMap();
 
 	TArray<FColor> colorMap;
-	for (int32 y = 0; y < _mapHeight; ++y)
+	for (int32 x = 0; x < _mapWidth; ++x)
 	{
-		for (int32 x = 0; x < _mapWidth; ++x)
+		for (int32 y = 0; y < _mapHeight; ++y)
 		{
-			float sample = noiseMap[x][y];
+			int32 color = (int32)(((noiseMap[y * _mapWidth + x] + 1.f) * 0.5f) * 255);
 
-			FLinearColor color = FMath::Lerp(FLinearColor::Black, FLinearColor::White, sample);
-
-			colorMap.Add(color.ToFColor(false));
+			colorMap.Add(FColor(color, color, color));
 		}
 	}
 
@@ -64,4 +61,39 @@ void APerlinMapGenerator::DisplayMap()
 		mesh->CreateDynamicMaterialInstance(0, mesh->GetMaterial(0));
 	DynamicMaterial->SetTextureParameterValue("Texture", CustomTexture);
 	mesh->SetMaterial(0, DynamicMaterial);
+}
+
+TArray<float> APerlinMapGenerator::GetNoiseMap()
+{
+	TArray<float> result;
+
+	switch (_generationType)
+	{
+	case EProceduralGeneration::PerlinNoise:
+		result = CustomPerlinNoise::FractalPerlinNoiseMap(
+			_mapWidth, _mapHeight, _scale, GetActorLocation(),
+			_octaves, _persistance, _lacunarity);
+		break;
+
+	case EProceduralGeneration::SimplexNoise:
+		result = CustomSimplexNoise::Map(
+			_mapWidth, _mapHeight, _scale, GetActorLocation(),
+			_octaves, _persistance, _lacunarity);
+		break;
+
+	case EProceduralGeneration::Voronoi:
+		break;
+
+	case EProceduralGeneration::MPD:
+		break;
+
+	case EProceduralGeneration::Diamond:
+		break;
+
+	case EProceduralGeneration::WaveCollapse:
+	default:
+		break;
+	}
+
+	return result;
 }

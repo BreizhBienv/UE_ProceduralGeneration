@@ -5,12 +5,16 @@
 #include "CoreMinimal.h"
 
 /**
-*  Sources used:
+* Sources used:
 * https://www.cs.umd.edu/class/spring2018/cmsc425/Lects/lect13-2d-perlin.pdf
 * https://en.wikipedia.org/wiki/Perlin_noise
 * https://rtouti.github.io/graphics/perlin-noise-algorithm
+* https://www.youtube.com/watch?v=kCIaHqb60Cw&t=230s
 * Unreal Engine source code: File UnrealMath.cpp & UnrealMath.h
 * 
+* 
+* https://www.redblobgames.com/maps/terrain-from-noise/
+* https://www.youtube.com/playlist?list=PLFt_AvWsXl0eBW2EiBtl_sxmDtSgZBxB3
 **/
 struct GRIDSYSTEM_API CustomPerlinNoise
 {
@@ -22,7 +26,7 @@ struct GRIDSYSTEM_API CustomPerlinNoise
 	static const int32 permutationTable[512];
 
 	/**
-	*	Curve w/ derivatives (from 0 to 2) as per Ken Perlin's improved noise paper.
+	*	Curve w/ derivatives as per Ken Perlin's improved noise paper.
 	**/
 	static float Fade(float p);
 
@@ -37,23 +41,14 @@ struct GRIDSYSTEM_API CustomPerlinNoise
 	*
 	*	@param pX X location where to sample.
 	*	@param pY Y location where to sample.
-	*	@param pChangeRange Return -1.0 to 1.0 (false), or 0 to 1.0 (true).
 	*
-	*	@return Perlin noise in the range -1.0 to 1.0 or 0 to 1.0.
+	*	@return Perlin noise in the range -1.0 to 1.0.
 	**/
-	static float Noise2D(float pX, float pY, bool pChangeRange);
+	static float Noise2D(float pX, float pY);
 
 #pragma endregion SampleGeneration
 
 #pragma region NoiseGeneration
-
-	/**
-	*	Sources: 
-	*	https://www.redblobgames.com/maps/terrain-from-noise/
-	*	https://www.youtube.com/playlist?list=PLFt_AvWsXl0eBW2EiBtl_sxmDtSgZBxB3
-	* 
-	**/
-
 	static int32 xRandRange;
 	static int32 yRandRange;
 
@@ -64,9 +59,13 @@ struct GRIDSYSTEM_API CustomPerlinNoise
 	* @param 3 & 4: The origin of the sampled area in the plane.
 	* @param 5:     The number of cycles of the basic noise pattern that are repeated over the width and height of the texture.
 	**/
-	static TArray<TArray<float>> GenerateNoiseMap(
-		const int32 pMapWidth, const int32 pMapHeight, const int32 pSeed,  float pScale,
-		const int32 pOctaves, const float pPersistance, const float pLacunarity, FVector2f pOffset);
+	static TArray<float> FractalPerlinNoiseMap(
+		const int32 pMapWidth, const int32 pMapHeight, float pScale,
+		const FVector& pOrigin, const int32 pOctaves, const float pPersistance,
+		const float pLacunarity);
+
+	static float FractalPerlinNoise(const FVector& pLocation, float pScale,
+		const int32 pOctaves, const float pPersistance, const float pLacunarity);
 
 #pragma endregion NoiseGeneration
 };

@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "GenericsEnum.h"
+
 #include "PerlinMapGenerator.generated.h"
 /**
  * 
@@ -14,6 +17,9 @@ class GRIDSYSTEM_API APerlinMapGenerator : public AActor
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
+	EProceduralGeneration _generationType;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Map")
 	int32 _mapWidth;
 
@@ -22,9 +28,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Map")
 	float _scale;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
-	int32 _seed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin",
 		meta = (ClampMin = "1", ClampMax = "8", UIMin = "1", UIMax = "8"))
@@ -38,9 +41,6 @@ public:
 		meta = (ClampMin = "1.0", ClampMax = "8.0", UIMin = "1.0", UIMax = "8.0"))
 	float _lacunarity;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin")
-	FVector2f _offset;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Map")
 	AActor* _plane = nullptr;
 
@@ -50,4 +50,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DisplayMap();
+
+	TArray<float> GetNoiseMap();
 };

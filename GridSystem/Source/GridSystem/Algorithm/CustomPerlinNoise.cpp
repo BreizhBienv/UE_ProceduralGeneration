@@ -62,18 +62,18 @@ float CustomPerlinNoise::Grad2D(int32 pHash, float pX, float pY)
     }
 }
 
-float CustomPerlinNoise::Noise2D(float pX, float pY, bool pChangeRange)
+float CustomPerlinNoise::Noise2D(float pX, float pY)
 {
-    float xf = FMath::FloorToFloat(pX);
-    float yf = FMath::FloorToFloat(pY);
+    // !!! Should use fastfloor to cast float ton int32
+    
 
     //Find unit cube that contains location
-    int32 xi = (int32)(xf) & 255;
-    int32 yi = (int32)(yf) & 255;
+    int32 xi = (int32)(pX) & 255;
+    int32 yi = (int32)(pY) & 255;
 
     //Find Relative x, y of location in unit cube
-    float X = pX - xf;
-    float Y = pY - yf;
+    float X = pX - (int32)pX;
+    float Y = pY - (int32)pY;
 
     float Xm1 = X - 1.f;
     float Ym1 = Y - 1.f;
@@ -96,7 +96,7 @@ float CustomPerlinNoise::Noise2D(float pX, float pY, bool pChangeRange)
         FMath::Lerp(Grad2D(P[AB], X, Ym1), Grad2D(P[BB], Xm1, Ym1), U),
         V);
 
-    return pChangeRange ? (result + 1.0f) / 2.0f : result;
+    return result;
 }
 #pragma region SampleGeneration
 
@@ -110,71 +110,54 @@ float CustomPerlinNoise::InvLerp(float a, float b, float v)
     return (v - a) /  (b - a);
 }
 
-TArray<TArray<float>> CustomPerlinNoise::GenerateNoiseMap(
-    const int32 pMapWidth, const int32 pMapHeight,
-    const int32 pSeed, float pScale, const int32 pOctaves,
-    const float pPersistance, const float pLacunarity, FVector2f pOffset)
+TArray<float> CustomPerlinNoise::FractalPerlinNoiseMap(
+    const int32 pMapWidth, const int32 pMapHeight, float pScale, 
+    const FVector& pOrigin, const int32 pOctaves, const float pPersistance,
+    const float pLacunarity)
+{
+    TArray<float> noiseMap;
+
+    for (int x = pOrigin.X; x < pMapWidth; ++x)
+    {
+        for (int y = pOrigin.Y; y < pMapHeight; ++y)
+        {
+            FVector location(x, y, 0);
+
+            noiseMap.Add(
+                FractalPerlinNoise(location, pScale, 
+                pOctaves, pPersistance, pLacunarity)
+            );
+        }
+    }
+
+    return noiseMap;
+}
+
+float CustomPerlinNoise::FractalPerlinNoise(const FVector& pLocation, float pScale,
+    const int32 pOctaves, const float pPersistance, const float pLacunarity)
 {
     if (pScale <= 0)
         pScale = 0.0001f;
 
-    FRandomStream stream(pSeed);
-    TArray<FVector2f> octaveOffset;
+    float amplitude = 1;
+    float frequency = 1;
+
+    float output = 0;
+    float denom = 0;
 
     for (int32 i = 0; i < pOctaves; ++i)
     {
-        float offsetX = stream.FRandRange(-xRandRange, xRandRange) + pOffset.X;
-        float offsetY = stream.FRandRange(-yRandRange, yRandRange) + pOffset.Y;
+        float sampleX = pLocation.X / pScale * frequency;
+        float sampleY = pLocation.Y / pScale * frequency;
 
-        octaveOffset.Add(FVector2f(offsetX, offsetY));
+        output += (amplitude * Noise2D(sampleX, sampleY));
+        denom += amplitude;
+
+        amplitude *= pPersistance;
+        frequency *= pLacunarity;
     }
 
-    TArray<float> row;
-    row.Init(0, pMapWidth);
-
-    TArray<TArray<float>> noiseMap;
-    noiseMap.Init(TArray<float>(row), pMapHeight);
-
-    float halfWidth = pMapWidth / 2;
-    float halfHeight = pMapHeight / 2;
-
-    float maxNoiseHeight = FLT_MIN;
-    float minNoiseHeight = FLT_MAX;
-
-    for (int y = 0; y < pMapHeight; ++y)
-    {
-        for (int x = 0; x < pMapWidth; ++x)
-        {
-            float amplitude = 1;
-            float frequency = 1;
-            float noiseHeight = 0;
-
-            for (int32 i = 0; i < pOctaves; ++i)
-            {
-                float sampleX = (x - halfWidth) / pScale * frequency + octaveOffset[i].X;
-                float sampleY = (y - halfHeight) / pScale * frequency + octaveOffset[i].Y;
-
-                float perlinValue = Noise2D(sampleX, sampleY, true);
-                noiseHeight += perlinValue * amplitude;
-
-                amplitude *= pPersistance;
-                frequency *= pLacunarity;
-            }
-
-            if (noiseHeight > maxNoiseHeight)
-                maxNoiseHeight = noiseHeight;
-            else if (noiseHeight < minNoiseHeight)
-                minNoiseHeight = noiseHeight;
-
-            noiseMap[x][y] = noiseHeight;
-        }
-    }
-
-    for (int y = 0; y < pMapHeight; ++y)
-        for (int x = 0; x < pMapWidth; ++x)
-            noiseMap[x][y] = InvLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x][y]);
-
-    return noiseMap;
+    return output / denom;
 }
 
 #pragma endregion NoiseGeneration

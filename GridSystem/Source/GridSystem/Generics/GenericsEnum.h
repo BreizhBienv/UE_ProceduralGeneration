@@ -24,16 +24,32 @@ GetEnumValueAsString<EnumClassName>                 \
 UENUM(BlueprintType)
 enum class ETileDirection : uint8
 {
-    North           UMETA(DisplayName = "N"),
-    NorthEast       UMETA(DisplayName = "NE"),
-    East            UMETA(DisplayName = "E"),
-    SouthEast       UMETA(DisplayName = "SE"),
-    South           UMETA(DisplayName = "S"),
-    SouthWest       UMETA(DisplayName = "SW"),
-    West            UMETA(DisplayName = "W"),
-    NorthWest       UMETA(DisplayName = "NW"),
+    N   UMETA(DisplayName = "North"),
+    NE  UMETA(DisplayName = "NorthEast"),
+    E   UMETA(DisplayName = "East"),
+    SE  UMETA(DisplayName = "SouthEast"),
+    S   UMETA(DisplayName = "South"),
+    SW  UMETA(DisplayName = "SouthWest"),
+    W   UMETA(DisplayName = "West"),
+    NW  UMETA(DisplayName = "NorthWest"),
 };
 
 #define TileDirToString(ValueOfEnum) \
 EnumToString(ETileDirection, ValueOfEnum)
+#pragma endregion
+
+#pragma region GenerationType
+UENUM(BlueprintType)
+enum class EProceduralGeneration : uint8
+{
+    PerlinNoise     UMETA(DisplayName = "PerlinNoise"),
+    SimplexNoise    UMETA(DisplayName = "SimplexNoise"),
+    Voronoi         UMETA(DisplayName = "Voronoi"),
+    MPD             UMETA(DisplayName = "Mid-Point Displacement"),
+    Diamond         UMETA(DisplayName = "Diamond-Square"),
+    WaveCollapse    UMETA(DisplayName = "WaveFunctionCollapse"),
+};
+
+#define ProceduralGenToString(ValueOfEnum) \
+EnumToString(EProceduralGeneration, ValueOfEnum)
 #pragma endregion

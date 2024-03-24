@@ -2,7 +2,7 @@
 
 
 #include "SquareTileGrid.h"
-#include "SquareTileGrid/SquareTileComponent.h"
+#include "SquareTileComponent.h"
 
 // Sets default values
 ASquareTileGrid::ASquareTileGrid()

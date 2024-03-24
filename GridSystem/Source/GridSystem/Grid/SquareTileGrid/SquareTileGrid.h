@@ -16,16 +16,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile")
 	UStaticMesh* _basicTile;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid Option")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GridGeneration")
+	EProceduralGeneration _generationType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GridGeneration")
 	int32 _width = 5;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid Option")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GridGeneration")
 	int32 _height = 5;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid Option")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GridGeneration")
 	float _offset = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid Option")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GridGeneration")
 	float _scale = 1;
 
 	// Sets default values for this actor's properties
