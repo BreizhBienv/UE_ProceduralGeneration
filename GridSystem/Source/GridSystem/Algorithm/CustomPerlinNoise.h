@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
+#ifndef PERLINNOISE
+#define PERLINNOISE
 
-#include "CoreMinimal.h"
+#pragma once
 
 /**
 * Sources used:
@@ -16,56 +17,20 @@
 * https://www.redblobgames.com/maps/terrain-from-noise/
 * https://www.youtube.com/playlist?list=PLFt_AvWsXl0eBW2EiBtl_sxmDtSgZBxB3
 **/
-struct GRIDSYSTEM_API CustomPerlinNoise
+
+namespace CustomPerlinNoise
 {
+	float PerlinNoise(float pX);
+	float PerlinNoise(float pX, float pY);
+	float PerlinNoise(float pX, float pY, float pZ);
 
-#pragma region SampleGeneration
+	float Fractal(const float pX, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+	float Fractal(const float pX, const float pY, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+	float Fractal(const float pX, const float pY, const float pZ, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity);
 
-	//Permutation table of Ken Perlin in his original implementation of the algorithm
-	//Table is also toubled to prevent overflow
-	static const int32 permutationTable[512];
+	TArray<float> Map(const int32 pMapWidth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+	TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+	TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, const int32 pMapDepth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+}
 
-	/**
-	*	Curve w/ derivatives as per Ken Perlin's improved noise paper.
-	**/
-	static float Fade(float p);
-
-	/**
-	*	Compute conversion of hash into gradient direction.
-	**/
-	static float Grad2D(int32 pHash, float pX, float pY);
-
-	/**
-	*	Generates a 2D Perlin noise sample at the given location.
-	*	Returns a random value between -1.0 and 1.0 or between 0 and 1.0
-	*
-	*	@param pX X location where to sample.
-	*	@param pY Y location where to sample.
-	*
-	*	@return Perlin noise in the range -1.0 to 1.0.
-	**/
-	static float Noise2D(float pX, float pY);
-
-#pragma endregion SampleGeneration
-
-#pragma region NoiseGeneration
-	static int32 xRandRange;
-	static int32 yRandRange;
-
-	static float InvLerp(float a, float b, float v);
-
-	/**
-	* @param 1 & 2: Width and height of the texture in pixels.
-	* @param 3 & 4: The origin of the sampled area in the plane.
-	* @param 5:     The number of cycles of the basic noise pattern that are repeated over the width and height of the texture.
-	**/
-	static TArray<float> FractalPerlinNoiseMap(
-		const int32 pMapWidth, const int32 pMapHeight, float pScale,
-		const FVector& pOrigin, const int32 pOctaves, const float pPersistance,
-		const float pLacunarity);
-
-	static float FractalPerlinNoise(const FVector& pLocation, float pScale,
-		const int32 pOctaves, const float pPersistance, const float pLacunarity);
-
-#pragma endregion NoiseGeneration
-};
+#endif

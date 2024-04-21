@@ -30,7 +30,7 @@ public:
 	float _scale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin",
-		meta = (ClampMin = "1", ClampMax = "8", UIMin = "1", UIMax = "8"))
+		meta = (ClampMin = "1", ClampMax = "10", UIMin = "1", UIMax = "10"))
 	int32 _octaves;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GenerationParameter|Perlin",

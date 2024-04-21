@@ -70,14 +70,14 @@ TArray<float> APerlinMapGenerator::GetNoiseMap()
 	switch (_generationType)
 	{
 	case EProceduralGeneration::PerlinNoise:
-		result = CustomPerlinNoise::FractalPerlinNoiseMap(
+		result = CustomPerlinNoise::Map(
 			_mapWidth, _mapHeight, _scale, GetActorLocation(),
 			_octaves, _persistance, _lacunarity);
 		break;
 
 	case EProceduralGeneration::SimplexNoise:
 		result = CustomSimplexNoise::Map(
-			_mapWidth, _mapHeight, _scale, GetActorLocation(),
+			_mapWidth, _mapHeight, GetActorLocation(),
 			_octaves, _persistance, _lacunarity);
 		break;
 
