@@ -24,13 +24,13 @@ namespace CustomPerlinNoise
 	float PerlinNoise(float pX, float pY);
 	float PerlinNoise(float pX, float pY, float pZ);
 
-	float Fractal(const float pX, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity);
-	float Fractal(const float pX, const float pY, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity);
-	float Fractal(const float pX, const float pY, const float pZ, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+	float Fractal(float pX, float pScale, int32 pOctaves, float pPersistance, float pLacunarity);
+	float Fractal(float pX, float pY, float pScale, int32 pOctaves, float pPersistance, float pLacunarity);
+	float Fractal(float pX, float pY, float pZ, float pScale, int32 pOctaves, float pPersistance, float pLacunarity);
 
-	TArray<float> Map(const int32 pMapWidth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
-	TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
-	TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, const int32 pMapDepth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+	TArray<float> Map(int32 pMapWidth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity);
+	TArray<float> Map(int32 pMapWidth, int32 pMapHeight, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity);
+	TArray<float> Map(int32 pMapWidth, int32 pMapHeight, int32 pMapDepth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity);
 }
 
 #endif

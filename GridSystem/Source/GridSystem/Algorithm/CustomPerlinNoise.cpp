@@ -4,8 +4,6 @@
 
 namespace CustomPerlinNoise
 {
-#define FASTFLOOR(x) ( ((x)>0) ? ((int32)x) : (((int32)x)-1) )
-
     //Permutation table of Ken Perlin in his original implementation of the algorithm
     //Table is also doubled to prevent overflow
     const int32 perm[512] = {
@@ -44,9 +42,21 @@ namespace CustomPerlinNoise
         222, 114,  67,  29,  24,  72, 243, 141, 128, 195,  78,  66, 215,  61, 156, 180
     };
 
+    int32 FastFloor(float p)
+    {
+        return p > 0 ? (int32)p : ((int32)p) - 1;
+    }
+
     float Fade(float p)
     {
         return p * p * p * (p * (p * 6.f - 15.f) + 10.f);
+    }
+
+    float Grad1(int32 pHash, float pX)
+    {
+        // Slicing Perlin's 3D improved noise would give us only scales of -1, 0 and 1; this looks pretty bad so let's use a different sampling
+        static const float Grad1Scales[16] = { -8 / 8, -7 / 8., -6 / 8., -5 / 8., -4 / 8., -3 / 8., -2 / 8., -1 / 8., 1 / 8., 2 / 8., 3 / 8., 4 / 8., 5 / 8., 6 / 8., 7 / 8., 8 / 8 };
+        return Grad1Scales[pHash & 15] * pX;
     }
 
     float Grad2D(int32 pHash, float pX, float pY)
@@ -65,15 +75,57 @@ namespace CustomPerlinNoise
         }
     }
 
+    float Grad3(int32 pHash, float pX, float pY, float pZ)
+    {
+        switch (pHash & 15)
+        {
+            // 12 cube midpoints
+        case 0: return pX + pZ;
+        case 1: return pX + pY;
+        case 2: return pY + pZ;
+        case 3: return -pX + pY;
+        case 4: return -pX + pZ;
+        case 5: return -pX - pY;
+        case 6: return -pY + pZ;
+        case 7: return pX - pY;
+        case 8: return pX - pZ;
+        case 9: return pY - pZ;
+        case 10: return -pX - pZ;
+        case 11: return -pY - pZ;
+            // 4 vertices of regular tetrahedron
+        case 12: return pX + pY;
+        case 13: return -pX + pY;
+        case 14: return -pY + pZ;
+        case 15: return -pY - pZ;
+            // can't happen
+        default: return 0;
+        }
+    }
+
+
+
     float PerlinNoise(float pX)
     {
-        return 0.0f;
+        int32 fx = FastFloor(pX);
+
+        int32 xi = fx & 255;
+
+        float X = pX - fx;
+        float Xm1 = X - 1.f;
+
+        int32 A = perm[xi];
+        int32 B = perm[xi + 1];
+
+        float U = Fade(X);
+
+        // 2.0 factor to ensure (-1, 1) range
+        return 2.0f * FMath::Lerp(Grad1(A, X), Grad1(B, Xm1), U);
     }
 
     float PerlinNoise(float pX, float pY)
     {
-        int32 fx = FASTFLOOR(pX);
-        int32 fy = FASTFLOOR(pY);
+        int32 fx = FastFloor(pX);
+        int32 fy = FastFloor(pY);
 
         //Find unit cube that contains location
         int32 xi = fx & 255;
@@ -109,12 +161,51 @@ namespace CustomPerlinNoise
 
     float PerlinNoise(float pX, float pY, float pZ)
     {
-        return 0.0f;
+        int32 fx = FastFloor(pX);
+        int32 fy = FastFloor(pY);
+        int32 fz = FastFloor(pZ);
+
+        int32 Xi = fx & 255;
+        int32 Yi = fy & 255;
+        int32 Zi = fz & 255;
+
+        float X = pX - fx;
+        float Y = pY - fy;
+        float Z = pZ - fz;
+
+        float Xm1 = X - 1.0f;
+        float Ym1 = Y - 1.0f;
+        float Zm1 = Z - 1.0f;
+
+        const int32* P = perm;
+        int32 A = P[Xi] + Yi;
+        int32 AA = P[A] + Zi;	int32 AB = P[A + 1] + Zi;
+
+        int32 B = P[Xi + 1] + Yi;
+        int32 BA = P[B] + Zi;	int32 BB = P[B + 1] + Zi;
+
+        float U = Fade(X);
+        float V = Fade(Y);
+        float W = Fade(Z);
+
+        // Note: range is already approximately -1,1 because of the specific choice of direction vectors for the Grad3 function
+        // This analysis (http://digitalfreepen.com/2017/06/20/range-perlin-noise.html) suggests scaling by 1/sqrt(3/4) * 1/maxGradientVectorLen, but the choice of gradient vectors makes this overly conservative
+        // Scale factor of .97 is (1.0/the max values of a billion random samples); to be 100% sure about the range I also just Clamp it for now.
+        return FMath::Clamp(0.97f *
+            FMath::Lerp(FMath::Lerp(FMath::Lerp(Grad3(P[AA], X, Y, Z), Grad3(P[BA], Xm1, Y, Z), U),
+                FMath::Lerp(Grad3(P[AB], X, Ym1, Z), Grad3(P[BB], Xm1, Ym1, Z), U),
+                V),
+                FMath::Lerp(FMath::Lerp(Grad3(P[AA + 1], X, Y, Zm1), Grad3(P[BA + 1], Xm1, Y, Zm1), U),
+                    FMath::Lerp(Grad3(P[AB + 1], X, Ym1, Zm1), Grad3(P[BB + 1], Xm1, Ym1, Zm1), U),
+                    V),
+                W
+            ),
+            -1.0f, 1.0f);
     }
 
 
 
-    float Fractal(const float pX, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    float Fractal(float pX, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         if (pScale <= 0)
             pScale = 0.0001f;
@@ -139,7 +230,7 @@ namespace CustomPerlinNoise
         return output / denom;
     }
 
-    float Fractal(const float pX, const float pY, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    float Fractal(float pX, float pY, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         if (pScale <= 0)
             pScale = 0.0001f;
@@ -165,7 +256,7 @@ namespace CustomPerlinNoise
         return output / denom;
     }
     
-    float Fractal(const float pX, const float pY, const float pZ, float pScale, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    float Fractal(float pX, float pY, float pZ, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         if (pScale <= 0)
             pScale = 0.0001f;
@@ -194,34 +285,34 @@ namespace CustomPerlinNoise
 
 
 
-    TArray<float> Map(const int32 pMapWidth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    TArray<float> Map(int32 pMapWidth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         TArray<float> noiseMap;
 
-        for (int32 x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
                 noiseMap.Add(Fractal(x, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;
     }
 
-    TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    TArray<float> Map(int32 pMapWidth, int32 pMapHeight, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         TArray<float> noiseMap;
 
-        for (int32 x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
-            for (int32 y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+            for (float y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
                 noiseMap.Add(Fractal(x, y, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;
     }
 
-    TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, const int32 pMapDepth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    TArray<float> Map(int32 pMapWidth, int32 pMapHeight, int32 pMapDepth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         TArray<float> noiseMap;
 
-        for (int32 x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
-            for (int32 y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
-                for (int32 z = pOrigin.Z; z < pMapHeight + pOrigin.Z; ++z)
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+            for (float y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
+                for (float z = pOrigin.Z; z < pMapHeight + pOrigin.Z; ++z)
                     noiseMap.Add(Fractal(x, y, z, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;

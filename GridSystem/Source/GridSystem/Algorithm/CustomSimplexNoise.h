@@ -13,6 +13,10 @@
  *	https://github.com/devdad/SimplexNoise/tree/master
  */
 
+/*
+*	Due to the patent on Ken Perlin's Simplex Noise, I recommend using OpenSimplexNoise.
+*	This project is purely R&D.
+*/
 
 namespace CustomSimplexNoise
 {
@@ -20,13 +24,13 @@ namespace CustomSimplexNoise
 	float SimplexNoise(float pX, float pY);
 	float SimplexNoise(float pX, float pY, float pZ);
 
-	float Fractal(float pX, int32 pOctaves, float pPersistance, float pLacunarity);
-	float Fractal(float pX, float pY, int32 pOctaves, float pPersistance, float pLacunarity);
-	float Fractal(float pX, float pY, float pZ, int32 pOctaves, float pPersistance, float pLacunarity);
+	float Fractal(float pX, float pScale, int32 pOctaves, float pPersistance, float pLacunarity);
+	float Fractal(float pX, float pY, float pScale, int32 pOctaves, float pPersistance, float pLacunarity);
+	float Fractal(float pX, float pY, float pZ, float pScale, int32 pOctaves, float pPersistance, float pLacunarity);
 
-	TArray<float> Map(const int32 pMapWidth, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
-	TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
-	TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, const int32 pMapDepth, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity);
+	TArray<float> Map(int32 pMapWidth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity);
+	TArray<float> Map(int32 pMapWidth, int32 pMapHeight, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity);
+	TArray<float> Map(int32 pMapWidth, int32 pMapHeight, int32 pMapDepth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity);
 }
 
 #endif

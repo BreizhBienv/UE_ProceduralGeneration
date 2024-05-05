@@ -77,7 +77,7 @@ TArray<float> APerlinMapGenerator::GetNoiseMap()
 
 	case EProceduralGeneration::SimplexNoise:
 		result = CustomSimplexNoise::Map(
-			_mapWidth, _mapHeight, GetActorLocation(),
+			_mapWidth, _mapHeight, _scale, GetActorLocation(),
 			_octaves, _persistance, _lacunarity);
 		break;
 

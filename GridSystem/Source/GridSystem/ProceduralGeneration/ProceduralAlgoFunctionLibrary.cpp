@@ -5,89 +5,90 @@
 #include "CustomSimplexNoise.h"
 #include "CustomPerlinNoise.h"
 
-#pragma region SimplexNoise
+#pragma region PerlinNoise
 
-float UProceduralAlgoFunctionLibrary::SimplexNoise1D(float pX)
+float UProceduralAlgoFunctionLibrary::PerlinNoise1D(float X)
 {
-	return CustomSimplexNoise::SimplexNoise(pX);
+	return CustomPerlinNoise::PerlinNoise(X);
 }
-float UProceduralAlgoFunctionLibrary::SimplexNoise2D(float pX, float pY)
+float UProceduralAlgoFunctionLibrary::PerlinNoise2D(float X, float Y)
 {
-	return CustomSimplexNoise::SimplexNoise(pX, pY);
+	return CustomPerlinNoise::PerlinNoise(X, Y);
 }
-float UProceduralAlgoFunctionLibrary::SimplexNoise3D(float pX, float pY, float pZ)
+float UProceduralAlgoFunctionLibrary::PerlinNoise3D(float X, float Y, float Z)
 {
-	return CustomSimplexNoise::SimplexNoise(pX, pY, pZ);
-}
-
-float UProceduralAlgoFunctionLibrary::FbmSimplexNoise1D(float pX, int32 pOctaves, float pPersistance, float pLacunarity)
-{
-	return CustomSimplexNoise::Fractal(pX, pOctaves, pPersistance, pLacunarity);
-}
-float UProceduralAlgoFunctionLibrary::FbmSimplexNoise2D(float pX, float pY, int32 pOctaves, float pPersistance, float pLacunarity)
-{
-	return CustomSimplexNoise::Fractal(pX, pY, pOctaves, pPersistance, pLacunarity);
-}
-float UProceduralAlgoFunctionLibrary::FbmSimplexNoise3D(float pX, float pY, float pZ, int32 pOctaves, float pPersistance, float pLacunarity)
-{
-	return CustomSimplexNoise::Fractal(pX, pY, pZ, pOctaves, pPersistance, pLacunarity);
+	return CustomPerlinNoise::PerlinNoise(X, Y, Z);
 }
 
-TArray<float> UProceduralAlgoFunctionLibrary::FbmMapSimplexNoise1D(const int32 pMapWidth, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+float UProceduralAlgoFunctionLibrary::FbmPerlinNoise1D(float X, float Scale, int32 Octaves, float Persistance, float Lacunarity)
 {
-	return CustomSimplexNoise::Map(pMapWidth, pOrigin, pOctaves, pPersistance, pLacunarity);
+	return CustomPerlinNoise::Fractal(X, Scale, Octaves, Persistance, Lacunarity);
 }
-TArray<float> UProceduralAlgoFunctionLibrary::FbmMapSimplexNoise2D(const int32 pMapWidth, const int32 pMapHeight, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+float UProceduralAlgoFunctionLibrary::FbmPerlinNoise2D(float X, float Y, float Scale, int32 Octaves, float Persistance, float Lacunarity)
 {
-	return CustomSimplexNoise::Map(pMapWidth, pMapHeight, pOrigin, pOctaves, pPersistance, pLacunarity);
+	return CustomPerlinNoise::Fractal(X, Y, Scale, Octaves, Persistance, Lacunarity);
 }
-TArray<float> UProceduralAlgoFunctionLibrary::FbmMapSimplexNoise3D(const int32 pMapWidth, const int32 pMapHeight, const int32 pMapDepth, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+float UProceduralAlgoFunctionLibrary::FbmPerlinNoise3D(float X, float Y, float Z, float Scale, int32 Octaves, float Persistance, float Lacunarity)
 {
-	return CustomSimplexNoise::Map(pMapWidth, pMapHeight, pMapDepth, pOrigin, pOctaves, pPersistance, pLacunarity);
+	return CustomPerlinNoise::Fractal(X, Y, Z, Scale, Octaves, Persistance, Lacunarity);
 }
 
+TArray<float> UProceduralAlgoFunctionLibrary::FbmMapPerlinNoise1D(int32 MapWidth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
+{
+	return CustomPerlinNoise::Map(MapWidth, Scale, Origin, Octaves, Persistance, Lacunarity);
+}
+TArray<float> UProceduralAlgoFunctionLibrary::FbmMapPerlinNoise2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
+{
+	return CustomPerlinNoise::Map(MapWidth, MapHeight, Scale, Origin, Octaves, Persistance, Lacunarity);
+}
+TArray<float> UProceduralAlgoFunctionLibrary::FbmMapPerlinNoise3D(int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
+{
+	return CustomPerlinNoise::Map(MapWidth, MapHeight, MapDepth, Scale, Origin, Octaves, Persistance, Lacunarity);
+}
 
 #pragma endregion
 
-#pragma region PerlinNoise
 
-float UProceduralAlgoFunctionLibrary::PerlinNoise1D(float pX, float pScale)
-{
-	return CustomPerlinNoise::PerlinNoise(pX / pScale);
-}
-float UProceduralAlgoFunctionLibrary::PerlinNoise2D(float pX, float pY, float pScale)
-{
-	return CustomPerlinNoise::PerlinNoise(pX / pScale, pY / pScale);
-}
-float UProceduralAlgoFunctionLibrary::PerlinNoise3D(float pX, float pY, float pZ, float pScale)
-{
-	return CustomPerlinNoise::PerlinNoise(pX / pScale, pY / pScale, pZ / pScale);
-}
+#pragma region SimplexNoise
 
-float UProceduralAlgoFunctionLibrary::FbmPerlinNoise1D(float pX, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
+float UProceduralAlgoFunctionLibrary::SimplexNoise1D(float X)
 {
-	return CustomPerlinNoise::Fractal(pX, pScale, pOctaves, pPersistance, pLacunarity);
+	return CustomSimplexNoise::SimplexNoise(X);
 }
-float UProceduralAlgoFunctionLibrary::FbmPerlinNoise2D(float pX, float pY, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
+float UProceduralAlgoFunctionLibrary::SimplexNoise2D(float X, float Y)
 {
-	return CustomPerlinNoise::Fractal(pX, pY, pScale, pOctaves, pPersistance, pLacunarity);
+	return CustomSimplexNoise::SimplexNoise(X, Y);
 }
-float UProceduralAlgoFunctionLibrary::FbmPerlinNoise3D(float pX, float pY, float pZ, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
+float UProceduralAlgoFunctionLibrary::SimplexNoise3D(float X, float Y, float Z)
 {
-	return CustomPerlinNoise::Fractal(pX, pY, pZ, pScale, pOctaves, pPersistance, pLacunarity);
+	return CustomSimplexNoise::SimplexNoise(X, Y, Z);
 }
 
-TArray<float> UProceduralAlgoFunctionLibrary::FbmMapSPerlinNoise1D(const int32 pMapWidth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+float UProceduralAlgoFunctionLibrary::FbmSimplexNoise1D(float X, float Scale, int32 Octaves, float Persistance, float Lacunarity)
 {
-	return CustomPerlinNoise::Map(pMapWidth, pScale, pOrigin, pOctaves, pPersistance, pLacunarity);
+	return CustomSimplexNoise::Fractal(X, Scale, Octaves, Persistance, Lacunarity);
 }
-TArray<float> UProceduralAlgoFunctionLibrary::FbmMapPerlinNoise2D(const int32 pMapWidth, const int32 pMapHeight, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+float UProceduralAlgoFunctionLibrary::FbmSimplexNoise2D(float X, float Y, float Scale, int32 Octaves, float Persistance, float Lacunarity)
 {
-	return CustomPerlinNoise::Map(pMapWidth, pMapHeight, pScale, pOrigin, pOctaves, pPersistance, pLacunarity);
+	return CustomSimplexNoise::Fractal(X, Y, Scale, Octaves, Persistance, Lacunarity);
 }
-TArray<float> UProceduralAlgoFunctionLibrary::FbmMapPerlinNoise3D(const int32 pMapWidth, const int32 pMapHeight, const int32 pMapDepth, float pScale, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+float UProceduralAlgoFunctionLibrary::FbmSimplexNoise3D(float X, float Y, float Z, float Scale, int32 Octaves, float Persistance, float Lacunarity)
 {
-	return CustomPerlinNoise::Map(pMapWidth, pMapHeight, pMapDepth, pScale, pOrigin, pOctaves, pPersistance, pLacunarity);
+	return CustomSimplexNoise::Fractal(X, Y, Z, Scale, Octaves, Persistance, Lacunarity);
 }
+
+TArray<float> UProceduralAlgoFunctionLibrary::FbmMapSimplexNoise1D(int32 MapWidth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
+{
+	return CustomSimplexNoise::Map(MapWidth, Scale, Origin, Octaves, Persistance, Lacunarity);
+}
+TArray<float> UProceduralAlgoFunctionLibrary::FbmMapSimplexNoise2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
+{
+	return CustomSimplexNoise::Map(MapWidth, MapHeight, Scale, Origin, Octaves, Persistance, Lacunarity);
+}
+TArray<float> UProceduralAlgoFunctionLibrary::FbmMapSimplexNoise3D(int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
+{
+	return CustomSimplexNoise::Map(MapWidth, MapHeight, MapDepth, Scale, Origin, Octaves, Persistance, Lacunarity);
+}
+
 
 #pragma endregion

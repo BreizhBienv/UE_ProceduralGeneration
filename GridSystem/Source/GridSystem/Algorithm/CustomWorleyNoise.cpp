@@ -1,4 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "CustomWorleyNoise.h"
 
-#include "CustomVoronoiNoise.h"
+namespace CustomWorleyNoise
+{
+
+}

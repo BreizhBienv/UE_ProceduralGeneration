@@ -4,8 +4,6 @@
 
 namespace CustomSimplexNoise
 {
-#define FASTFLOOR(x) ( ((x)>0) ? ((int32)x) : (((int32)x)-1) )
-
     const int32 perm[512] = {
     151, 160, 137,  91,  90,  15, 131,  13, 201,  95,  96,  53, 194, 233,   7, 225,
     140,  36, 103,  30,  69, 142,   8,  99,  37, 240,  21,  10,  23, 190,   6, 148,
@@ -42,6 +40,11 @@ namespace CustomSimplexNoise
     222, 114,  67,  29,  24,  72, 243, 141, 128, 195,  78,  66, 215,  61, 156, 180,
     };
 
+    int32 FastFloor(float p)
+    {
+        return p > 0 ? (int32)p : ((int32)p) - 1;
+    }
+
     float Grad(int32 pHash, float pX)
     {
         const int32 h = pHash & 15;
@@ -71,7 +74,7 @@ namespace CustomSimplexNoise
     {
         float n0, n1;
 
-        int32 i0 = FASTFLOOR(pX);
+        int32 i0 = FastFloor(pX);
         int32 i1 = i0 + 1;
         float x0 = pX - i0;
         float x1 = x0 - 1.0f;
@@ -92,7 +95,7 @@ namespace CustomSimplexNoise
     }
 
     float SimplexNoise(float pX, float pY)
-	{
+    {
         // Skewing/Unskewing factors for 2D
 #define F2 0.366025403f;   //F2 = (sqrt(3) - 1) / 2
 #define G2 0.211324865f;   //G2 = (3 - sqrt(3)) / 6   = F2 / (1 + 2 * K)
@@ -102,14 +105,14 @@ namespace CustomSimplexNoise
 
         //Skew the intput space to determine which simplex we are in.
         float s = (pX + pY) * F2; // Hairy factor for 2D
-        int32 i = FASTFLOOR(pX + s);
-        int32 j = FASTFLOOR(pY + s);
+        int32 i = FastFloor(pX + s);
+        int32 j = FastFloor(pY + s);
 
         // Unskew the cell origin back to (x,y) space
         float t = (float)(i + j) * G2;
         const float X0 = i - t;
         const float Y0 = j - t;
-        
+
         // The x,y distances from the cell origin
         const float x0 = pX - X0;
         const float y0 = pY - Y0;
@@ -128,10 +131,10 @@ namespace CustomSimplexNoise
             j1 = 1;
         }
 
-        /* 
+        /*
             A step of(1, 0) in(i, j) means a step of(1 - c, -c) in(x, y), and
             a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
-            c = (3-sqrt(3))/6 
+            c = (3-sqrt(3))/6
          */
 
         const float x1 = x0 - i1 + G2;            // Offsets for middle corner in (x,y) unskewed coords
@@ -147,7 +150,7 @@ namespace CustomSimplexNoise
         float t0 = 0.5f - x0 * x0 - y0 * y0;
         if (t0 < 0.0f)
             n0 = 0.0f;
-        else 
+        else
         {
             t0 *= t0;
             n0 = t0 * t0 * Grad(perm[ii + perm[jj]], x0, y0);
@@ -157,7 +160,7 @@ namespace CustomSimplexNoise
         float t1 = 0.5f - x1 * x1 - y1 * y1;
         if (t1 < 0.0f)
             n1 = 0.0f;
-        else 
+        else
         {
             t1 *= t1;
             n1 = t1 * t1 * Grad(perm[ii + i1 + perm[jj + j1]], x1, y1);
@@ -165,18 +168,18 @@ namespace CustomSimplexNoise
 
         // Calculate the contribution from the third corner
         float t2 = 0.5f - x2 * x2 - y2 * y2;
-        if (t2 < 0.0f) 
+        if (t2 < 0.0f)
             n2 = 0.0f;
         else
         {
             t2 *= t2;
             n2 = t2 * t2 * Grad(perm[ii + 1 + perm[jj + 1]], x2, y2);
         }
-        
+
         // Add contributions from each corner to get the final noise value.
         // The result is scaled to return values in the interval [-1,1].
         return (40.0f / 0.884343445f) * (n0 + n1 + n2);
-	}
+    }
 
     float SimplexNoise(float pX, float pY, float pZ)
     {
@@ -191,9 +194,9 @@ namespace CustomSimplexNoise
         float xs = pX + s;
         float ys = pY + s;
         float zs = pZ + s;
-        int32 i = FASTFLOOR(xs);
-        int32 j = FASTFLOOR(ys);
-        int32 k = FASTFLOOR(zs);
+        int32 i = FastFloor(xs);
+        int32 j = FastFloor(ys);
+        int32 k = FastFloor(zs);
 
         float t = (float)(i + j + k) * G3;
         float X0 = i - t; // Unskew the cell origin back to (x,y,z) space
@@ -327,8 +330,11 @@ namespace CustomSimplexNoise
 
 
 
-    float Fractal(float pX, int32 pOctaves, float pPersistance, float pLacunarity)
+    float Fractal(float pX, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
     {
+        if (pScale <= 0)
+            pScale = 0.0001f;
+
         float amplitude = 1.f;
         float frequency = 1.f;
 
@@ -337,7 +343,7 @@ namespace CustomSimplexNoise
 
         for (int32 i = 0; i < pOctaves; ++i)
         {
-            float sampleX = pX * frequency;
+            float sampleX = pX / pScale * frequency;
 
             output += (amplitude * SimplexNoise(sampleX));
             denom += amplitude;
@@ -349,8 +355,11 @@ namespace CustomSimplexNoise
         return output / denom;
     }
 
-    float Fractal(float pX, float pY, int32 pOctaves, float pPersistance, float pLacunarity)
+    float Fractal(float pX, float pY, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
 	{
+        if (pScale <= 0)
+            pScale = 0.0001f;
+
         float amplitude = 1.f;
         float frequency = 1.f;
 
@@ -359,8 +368,8 @@ namespace CustomSimplexNoise
 
         for (int32 i = 0; i < pOctaves; ++i)
         {
-            float sampleX = pX * frequency;
-            float sampleY = pY * frequency;
+            float sampleX = pX / pScale * frequency;
+            float sampleY = pY / pScale * frequency;
 
             output += (amplitude * SimplexNoise(sampleX, sampleY));
             denom += amplitude;
@@ -372,8 +381,11 @@ namespace CustomSimplexNoise
         return output / denom;
 	}
 
-    float Fractal(float pX, float pY, float pZ, int32 pOctaves, float pPersistance, float pLacunarity)
+    float Fractal(float pX, float pY, float pZ, float pScale, int32 pOctaves, float pPersistance, float pLacunarity)
     {
+        if (pScale <= 0)
+            pScale = 0.0001f;
+
         float amplitude = 1.f;
         float frequency = 1.f;
 
@@ -382,9 +394,9 @@ namespace CustomSimplexNoise
 
         for (int32 i = 0; i < pOctaves; ++i)
         {
-            float sampleX = pX * frequency;
-            float sampleY = pY * frequency;
-            float sampleZ = pZ * frequency;
+            float sampleX = pX / pScale * frequency;
+            float sampleY = pY / pScale * frequency;
+            float sampleZ = pZ / pScale * frequency;
 
             output += (amplitude * SimplexNoise(sampleX, sampleY, sampleZ));
             denom += amplitude;
@@ -398,35 +410,35 @@ namespace CustomSimplexNoise
 
 
 
-    TArray<float> Map(const int32 pMapWidth, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    TArray<float> Map(int32 pMapWidth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         TArray<float> noiseMap;
 
-        for (int32 x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
-                noiseMap.Add(Fractal(x, pOctaves, pPersistance, pLacunarity));
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+                noiseMap.Add(Fractal(x, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;
     }
 
-    TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    TArray<float> Map(int32 pMapWidth, int32 pMapHeight, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         TArray<float> noiseMap;
 
-        for (int32 x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
-            for (int32 y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
-                noiseMap.Add(Fractal(x, y, pOctaves, pPersistance, pLacunarity));
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+            for (float y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
+                noiseMap.Add(Fractal(x, y, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;
     }
 
-    TArray<float> Map(const int32 pMapWidth, const int32 pMapHeight, const int32 pMapDepth, const FVector& pOrigin, const int32 pOctaves, const float pPersistance, const float pLacunarity)
+    TArray<float> Map(int32 pMapWidth, int32 pMapHeight, int32 pMapDepth, float pScale, const FVector& pOrigin, int32 pOctaves, float pPersistance, float pLacunarity)
     {
         TArray<float> noiseMap;
 
-        for (int32 x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
-            for (int32 y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
-                for (int32 z = pOrigin.Z; y < pMapDepth + pOrigin.Z; ++z)
-                    noiseMap.Add(Fractal(x, y, z, pOctaves, pPersistance, pLacunarity));
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+            for (float y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
+                for (float z = pOrigin.Z; y < pMapDepth + pOrigin.Z; ++z)
+                    noiseMap.Add(Fractal(x, y, z, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;
     }
