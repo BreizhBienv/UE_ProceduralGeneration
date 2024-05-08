@@ -4,6 +4,7 @@
 #include "PerlinMapGenerator.h"
 #include "CustomPerlinNoise.h"
 #include "CustomSimplexNoise.h"
+#include "CustomWorleyNoise.h"
 #include "Engine/Texture2D.h"
 #include "Math/Color.h"
 
@@ -25,7 +26,7 @@ void APerlinMapGenerator::DisplayMap()
 	{
 		for (int32 y = 0; y < _mapHeight; ++y)
 		{
-			int32 color = (int32)(((noiseMap[y * _mapWidth + x] + 1.f) * 0.5f) * 255);
+			int32 color = (int32)((noiseMap[y * _mapWidth + x]) * 255);
 
 			colorMap.Add(FColor(color, color, color));
 		}
@@ -82,6 +83,7 @@ TArray<float> APerlinMapGenerator::GetNoiseMap()
 		break;
 
 	case EProceduralGeneration::Voronoi:
+		result = CustomWorleyNoise::Map(_mapWidth, 5);
 		break;
 
 	case EProceduralGeneration::MPD:
