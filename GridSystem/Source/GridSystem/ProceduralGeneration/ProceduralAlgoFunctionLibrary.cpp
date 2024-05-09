@@ -6,6 +6,9 @@
 #include "CustomPerlinNoise.h"
 #include "CustomWorleyNoise.h"
 
+#include "RHICommandList.h"
+#include "Rendering/Texture2DResource.h"
+
 #pragma region PerlinNoise
 
 float UProceduralAlgoFunctionLibrary::PerlinNoise1D(float X)
@@ -45,6 +48,40 @@ TArray<float> UProceduralAlgoFunctionLibrary::FbmNoiseMapPerlinNoise2D(int32 Map
 TArray<float> UProceduralAlgoFunctionLibrary::FbmNoiseMapPerlinNoise3D(int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
 {
 	return CustomPerlinNoise::Map(MapWidth, MapHeight, MapDepth, Scale, Origin, Octaves, Persistance, Lacunarity);
+}
+
+UTexture2D* UProceduralAlgoFunctionLibrary::PerlinNoise2DTexture(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity)
+{
+    //initialize texture
+    uint32 totalPixels = MapWidth * MapHeight;
+    uint32 dataSize = totalPixels * 4;
+    uint32 srcPitch = MapWidth * 4; //Why not SQRT(totalPixels) ?
+
+    uint8* textureData = new uint8[dataSize];
+
+    UTexture2D* dynamicTexture = UTexture2D::CreateTransient(MapWidth, MapHeight);
+    dynamicTexture->CompressionSettings = TextureCompressionSettings::TC_VectorDisplacementmap;
+    dynamicTexture->SRGB = 1;
+    dynamicTexture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+    dynamicTexture->Filter = TextureFilter::TF_Nearest;
+    dynamicTexture->AddToRoot();
+    dynamicTexture->UpdateResource();
+
+    FUpdateTextureRegion2D* textureRegion = new FUpdateTextureRegion2D(0, 0, 0, 0, MapWidth, MapHeight);
+
+    FLinearColor color = FColor::Purple;
+    for (uint32 i = 0; i < totalPixels; i++)
+    {
+        textureData[i * 4]      = color.B * 255;
+        textureData[i * 4 + 1]  = color.G * 255;
+        textureData[i * 4 + 2]  = color.R * 255;
+        textureData[i * 4 + 3]  = color.A * 255;
+    }
+
+    dynamicTexture->UpdateTextureRegions(0, 1, textureRegion, srcPitch, 4, textureData);
+
+    //UpdateTexture(dynamicTexture, textureRegion, textureData, textureDataSqrtSize);
+    return dynamicTexture;
 }
 
 #pragma endregion

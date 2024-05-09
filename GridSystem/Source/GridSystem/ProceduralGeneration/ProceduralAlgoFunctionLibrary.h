@@ -7,13 +7,14 @@
 #include "ProceduralAlgoFunctionLibrary.generated.h"
 
 /**
- * 
+ * Creating Texture at runtime:
+ * https://dev.epicgames.com/community/learning/tutorials/ow9v/unreal-engine-creating-a-runtime-editable-texture-in-c
  */
 UCLASS()
 class GRIDSYSTEM_API UProceduralAlgoFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-	
+
 public:
 #pragma region PerlinNoise
 	
@@ -34,9 +35,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
 	static TArray<float> FbmNoiseMapPerlinNoise1D(int32 MapWidth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
-	static TArray<float> FbmNoiseMapPerlinNoise2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& pOrigin, int32 Octaves, float Persistance, float Lacunarity);
+	static TArray<float> FbmNoiseMapPerlinNoise2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
 	static TArray<float> FbmNoiseMapPerlinNoise3D (int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
+
+	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
+	static UTexture2D* PerlinNoise2DTexture(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 
 #pragma endregion
 
