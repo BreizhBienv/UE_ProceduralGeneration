@@ -22,9 +22,9 @@ void APerlinMapGenerator::DisplayMap()
 	TArray<float> noiseMap = GetNoiseMap();
 
 	TArray<FColor> colorMap;
-	for (int32 x = 0; x < _mapWidth; ++x)
+	for (int32 y = 0; y < _mapHeight; ++y)
 	{
-		for (int32 y = 0; y < _mapHeight; ++y)
+		for (int32 x = 0; x < _mapWidth; ++x)
 		{
 			int32 color = (int32)((noiseMap[y * _mapWidth + x]) * 255);
 
@@ -39,16 +39,14 @@ void APerlinMapGenerator::DisplayMap()
 	uint8* RawImageData = static_cast<uint8*>(
 		CustomTexture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
 
-	for (auto [iColor, iData] = TPair<int32, int32>(0, 0);
-		iColor < _mapWidth * _mapHeight;
-		++iColor, iData += 4)
+	for (int32 i = 0; i < _mapWidth * _mapHeight; ++i)
 	{
-		FColor color = colorMap[iColor];
+		FColor color = colorMap[i];
 
-		RawImageData[iData]		= color.B;
-		RawImageData[iData + 1] = color.G;
-		RawImageData[iData + 2] = color.R;
-		RawImageData[iData + 3] = color.A;
+		RawImageData[i * 4]		= color.B;
+		RawImageData[i * 4 + 1] = color.G;
+		RawImageData[i * 4 + 2] = color.R;
+		RawImageData[i * 4 + 3] = color.A;
 	}
 
 	CustomTexture->GetPlatformData()->Mips[0].BulkData.Unlock();
@@ -72,13 +70,13 @@ TArray<float> APerlinMapGenerator::GetNoiseMap()
 	{
 	case EProceduralGeneration::PerlinNoise:
 		result = CustomPerlinNoise::Map(
-			_mapWidth, _mapHeight, _scale, GetActorLocation(),
+			_mapWidth, _mapHeight, _scale, FVector(0, 0, 0),
 			_octaves, _persistance, _lacunarity);
 		break;
 
 	case EProceduralGeneration::SimplexNoise:
 		result = CustomSimplexNoise::Map(
-			_mapWidth, _mapHeight, _scale, GetActorLocation(),
+			_mapWidth, _mapHeight, _scale, FVector(0, 0, 0),
 			_octaves, _persistance, _lacunarity);
 		break;
 

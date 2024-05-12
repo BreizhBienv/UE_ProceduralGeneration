@@ -13,9 +13,9 @@ namespace CustomWorleyNoise
 		for (int32 i = 0; i < pPointsNum; ++i)
 			points.Add(FVector2f(FMath::FRand(), FMath::FRand()));
 
-		for (int32 x = 0; x < pBounds; ++x)
+		for (int32 y = 0; y < pBounds; ++y)
 		{
-			for (int32 y = 0; y < pBounds; ++y)
+			for (int32 x = 0; x < pBounds; ++x)
 			{
 				FVector2f pixelPos(x, y);
 				pixelPos /= pBounds;

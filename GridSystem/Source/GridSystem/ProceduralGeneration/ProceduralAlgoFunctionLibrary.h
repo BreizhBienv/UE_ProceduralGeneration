@@ -16,6 +16,9 @@ class GRIDSYSTEM_API UProceduralAlgoFunctionLibrary : public UBlueprintFunctionL
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|Texture")
+	static UTexture2D* TextureFrom2DNoiseMap(int32 MapWidth, int32 MapHeight, const TArray<float>& NoiseMap);
+
 #pragma region PerlinNoise
 	
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
@@ -38,10 +41,6 @@ public:
 	static TArray<float> FbmNoiseMapPerlinNoise2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
 	static TArray<float> FbmNoiseMapPerlinNoise3D (int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
-
-	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
-	static UTexture2D* PerlinNoise2DTexture(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
-
 #pragma endregion
 
 
