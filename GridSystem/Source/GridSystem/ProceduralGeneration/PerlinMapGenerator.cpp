@@ -26,7 +26,7 @@ void APerlinMapGenerator::DisplayMap()
 	{
 		for (int32 x = 0; x < _mapWidth; ++x)
 		{
-			int32 color = (int32)((noiseMap[y * _mapWidth + x]) * 255);
+			int32 color = (int32)((noiseMap[x * _mapWidth + y]) * 255);
 
 			colorMap.Add(FColor(color, color, color));
 		}
@@ -81,7 +81,7 @@ TArray<float> APerlinMapGenerator::GetNoiseMap()
 		break;
 
 	case EProceduralGeneration::Voronoi:
-		result = CustomWorleyNoise::Map(_mapWidth, 5);
+		result = CustomWorleyNoise::Map(_mapWidth, _mapHeight, 5);
 		break;
 
 	case EProceduralGeneration::MPD:

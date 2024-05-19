@@ -6,10 +6,25 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ProceduralAlgoFunctionLibrary.generated.h"
 
+/*
+*	Sources:
+*	Creating Texture at runtime :
+*	https://dev.epicgames.com/community/learning/tutorials/ow9v/unreal-engine-creating-a-runtime-editable-texture-in-c
+*/
+
 /**
- * Creating Texture at runtime:
- * https://dev.epicgames.com/community/learning/tutorials/ow9v/unreal-engine-creating-a-runtime-editable-texture-in-c
+ * 2D Array index formula:
+ *		- Row Major	= (X * width) + Y
+ *		- Col Major	= (Y * height) + X
+ *
+ * 3D Array index formula:
+ *		- Row Major	= (X * height * depth) + (Y * depth) + Z 
+ *		- Col Major	= (Z * width * height) + (Y * height) + X
  */
+
+/*
+* 
+*/
 UCLASS()
 class GRIDSYSTEM_API UProceduralAlgoFunctionLibrary : public UBlueprintFunctionLibrary
 {
@@ -36,11 +51,11 @@ public:
 	static float FbmPerlinNoise3D(float X, float Y, float Z, float Scale, int32 Octaves, float Persistance, float Lacunarity);
 
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
-	static TArray<float> FbmNoiseMapPerlinNoise1D(int32 MapWidth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
+	static TArray<float> FbmPerlinNoiseMap1D(int32 MapWidth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
-	static TArray<float> FbmNoiseMapPerlinNoise2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
+	static TArray<float> FbmPerlinNoiseMap2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|PerlinNoise")
-	static TArray<float> FbmNoiseMapPerlinNoise3D (int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
+	static TArray<float> FbmPerlinNoiseMap3D (int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 #pragma endregion
 
 
@@ -61,11 +76,11 @@ public:
 	static float FbmSimplexNoise3D(float X, float Y, float Z, float Scale, int32 Octaves, float Persistance, float Lacunarity);
 
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|SimplexNoise")
-	static TArray<float> FbmNoiseMapSimplexNoise1D(int32 MapWidth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
+	static TArray<float> FbmSimplexNoiseMap1D(int32 MapWidth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|SimplexNoise")
-	static TArray<float> FbmNoiseMapSimplexNoise2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
+	static TArray<float> FbmSimplexNoiseMap2D(int32 MapWidth, int32 MapHeight, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|SimplexNoise")
-	static TArray<float> FbmNoiseMapSimplexNoise3D(int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
+	static TArray<float> FbmSimplexNoiseMap3D(int32 MapWidth, int32 MapHeight, int32 MapDepth, float Scale, const FVector& Origin, int32 Octaves, float Persistance, float Lacunarity);
 
 #pragma endregion
 
@@ -73,7 +88,10 @@ public:
 #pragma region WorleyNoise
 
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|WorleyNoise")
-	static TArray<float> NoiseMapWorleyNoise2D(int32 Bounds, int32 PointsNumber);
+	static TArray<float> WorleyNoiseMap2D(int32 Width, int32 Height, int32 PointsNumber);
+
+	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|WorleyNoise")
+	static TArray<float> WorleyNoiseMap3D(int32 Width, int32 Height, int32 Depth, int32 PointsNumber);
 
 #pragma endregion
 };

@@ -299,8 +299,8 @@ namespace CustomPerlinNoise
     {
         TArray<float> noiseMap;
 
-        for (float y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
-            for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+            for (float y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
                 noiseMap.Add(Fractal(x, y, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;
@@ -310,9 +310,9 @@ namespace CustomPerlinNoise
     {
         TArray<float> noiseMap;
 
-        for (float z = pOrigin.Z; z < pMapHeight + pOrigin.Z; ++z)
+        for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
             for (float y = pOrigin.Y; y < pMapHeight + pOrigin.Y; ++y)
-                for (float x = pOrigin.X; x < pMapWidth + pOrigin.X; ++x)
+                for (float z = pOrigin.Z; z < pMapHeight + pOrigin.Z; ++z)
                     noiseMap.Add(Fractal(x, y, z, pScale, pOctaves, pPersistance, pLacunarity));
 
         return noiseMap;

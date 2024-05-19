@@ -12,7 +12,8 @@
 
 namespace CustomWorleyNoise
 {
-	TArray<float> Map(int32 pBounds, int32 pPointsNum);
+	TArray<float> Map(int32 pWidth, int32 pHeight, int32 pPointsNum);
+	TArray<float> Map(int32 pWidth, int32 pHeight, int32 pDepth, int32 pPointsNum);
 }
 
 #endif
