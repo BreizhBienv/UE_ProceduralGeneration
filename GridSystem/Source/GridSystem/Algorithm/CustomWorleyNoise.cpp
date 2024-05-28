@@ -11,9 +11,9 @@ namespace CustomWorleyNoise
 			points.Add(FVector2f(FMath::FRand(), FMath::FRand()));
 
 		TArray<float> noiseMap;
-		for (int32 x = 0; x < pWidth; ++x)
+		for (int32 y = 0; y < pHeight; ++y)
 		{
-			for (int32 y = 0; y < pHeight; ++y)
+			for (int32 x = 0; x < pWidth; ++x)
 			{
 				FVector2f pixelPos(x, y);
 				pixelPos.X /= pWidth;
@@ -38,11 +38,11 @@ namespace CustomWorleyNoise
 			points.Add(FVector(FMath::FRand(), FMath::FRand(), FMath::FRand()));
 
 		TArray<float> noiseMap;
-		for (int32 x = 0; x < pWidth; ++x)
+		for (int32 z = 0; z < pDepth; ++z)
 		{
 			for (int32 y = 0; y < pHeight; ++y)
 			{
-				for (int32 z = 0; z < pDepth; ++z)
+				for (int32 x = 0; x < pWidth; ++x)
 				{
 					FVector pixelPos(x, y, z);
 					pixelPos.X /= pWidth;

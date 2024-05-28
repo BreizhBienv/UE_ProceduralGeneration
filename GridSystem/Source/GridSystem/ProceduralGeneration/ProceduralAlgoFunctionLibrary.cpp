@@ -5,6 +5,7 @@
 #include "CustomSimplexNoise.h"
 #include "CustomPerlinNoise.h"
 #include "CustomWorleyNoise.h"
+#include "MidpointDisplacement.h"
 
 #include "RHICommandList.h"
 #include "Rendering/Texture2DResource.h"
@@ -142,6 +143,16 @@ TArray<float> UProceduralAlgoFunctionLibrary::WorleyNoiseMap2D(int32 Width, int3
 TArray<float> UProceduralAlgoFunctionLibrary::WorleyNoiseMap3D(int32 Width, int32 Height, int32 Depth, int32 PointsNumber)
 {
     return CustomWorleyNoise::Map(Width, Height, Depth, PointsNumber);
+}
+
+
+#pragma endregion
+
+#pragma region MidpointDisplacement
+
+TArray<float> UProceduralAlgoFunctionLibrary::MidpointDisplacementMap2D(int32 Size, int32 Seed, float Spread, float SpreadFactor)
+{
+    return MidpointDisplacement::Map(Size, Seed, Spread, SpreadFactor);
 }
 
 #pragma endregion

@@ -2,17 +2,15 @@
 
 #pragma once
 
-#ifndef WORLEYNOISE
-#define WORLEYNOISE
+#ifndef DIAMONDSQUARE
+#define DIAMONDSQUARE
 
 /*
 * Sources used:
-* https://thebookofshaders.com/12/
-* https://www.youtube.com/watch?v=4066MndcyCk
-* 
+*
 */
 
-namespace CustomWorleyNoise
+namespace DiamondSquare
 {
 	TArray<float> Map(int32 pWidth, int32 pHeight, int32 pPointsNum);
 	TArray<float> Map(int32 pWidth, int32 pHeight, int32 pDepth, int32 pPointsNum);
