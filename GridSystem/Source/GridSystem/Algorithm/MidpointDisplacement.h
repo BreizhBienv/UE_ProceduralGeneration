@@ -10,10 +10,21 @@
 *	https://stevelosh.com/blog/2016/02/midpoint-displacement/
 *	https://learn.64bitdragon.com/articles/computer-science/procedural-generation/the-diamond-square-algorithm
 */
-
 namespace MidpointDisplacement
 {
-	TArray<float> Map(int32 pSize, int32 pSeed, float pSpread, float pSpreadFactor);
+	TArray<float> Map(int32 pWidth, int32 pSeed, float pSpread, float pSpreadFactor);
+}
+
+
+/*
+* Sources used:
+* https://learn.64bitdragon.com/articles/computer-science/procedural-generation/the-diamond-square-algorithm
+* https://www.youtube.com/watch?v=4GuAV1PnurU&t=48s
+* https://www.youtube.com/watch?v=qNoSliX_6Gc&t=298s
+*/
+namespace DiamondSquare
+{
+	TArray<float> Map(int32 pWidth, int32 pSeed, float pRoughness);
 }
 
 #endif

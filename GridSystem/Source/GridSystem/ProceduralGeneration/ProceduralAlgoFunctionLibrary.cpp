@@ -150,9 +150,14 @@ TArray<float> UProceduralAlgoFunctionLibrary::WorleyNoiseMap3D(int32 Width, int3
 
 #pragma region MidpointDisplacement
 
-TArray<float> UProceduralAlgoFunctionLibrary::MidpointDisplacementMap2D(int32 Size, int32 Seed, float Spread, float SpreadFactor)
+TArray<float> UProceduralAlgoFunctionLibrary::MidpointDisplacementMap2D(int32 Width, int32 Seed, float Spread, float SpreadFactor)
 {
-    return MidpointDisplacement::Map(Size, Seed, Spread, SpreadFactor);
+    return MidpointDisplacement::Map(Width, Seed, Spread, SpreadFactor);
+}
+
+TArray<float> UProceduralAlgoFunctionLibrary::DiamondSquareMap2D(int32 Width, int32 Seed, float Roughness)
+{
+    return DiamondSquare::Map(Width, Seed, Roughness);
 }
 
 #pragma endregion

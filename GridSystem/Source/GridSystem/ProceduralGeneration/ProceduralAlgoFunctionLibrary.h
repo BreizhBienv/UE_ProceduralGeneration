@@ -101,6 +101,10 @@ public:
 	* The size of the map have to be 1 + 2^n for proper use.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|MidpointDisplacement")
-	static TArray<float> MidpointDisplacementMap2D(int32 Size, int32 Seed, float Spread, float SpreadFactor);
+	static TArray<float> MidpointDisplacementMap2D(int32 Width, int32 Seed, float Spread, float SpreadFactor);
+
+	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|MidpointDisplacement")
+	static TArray<float> DiamondSquareMap2D(int32 Width, int32 Seed, float Roughness);
+
 #pragma endregion
 };
