@@ -66,7 +66,7 @@ namespace MidpointDisplacement
 		pHeightMap[GetID(pWidth, cx, cy)]	= Jitter(c, pSpread);
 	}
 
-	TArray<float> Map(int32 pWidth, int32 pSeed, float pSpread, float pSpreadFactor)
+	TArray<float> Map(int32 pWidth, float pSpread, float pSpreadFactor)
 	{
 		TArray<float> heightMap;
 		heightMap.Init(1, pWidth * pWidth);
@@ -76,8 +76,6 @@ namespace MidpointDisplacement
 			UE_LOG(LogTemp, Error, TEXT("Midpoint Displacement 2D: Map size is not equal to (1 + 2^n)"));
 			return heightMap;
 		}
-
-		FMath::RandInit(pSeed);
 
 		//Set corners random value between 0 and 1
 		heightMap[GetID(pWidth, 0, 0)]						= FMath::FRand();
@@ -197,7 +195,7 @@ namespace DiamondSquare
 		}
 	}
 
-	TArray<float> DiamondSquare::Map(int32 pWidth, int32 pSeed, float pRoughness)
+	TArray<float> DiamondSquare::Map(int32 pWidth, float pRoughness)
 	{
 		TArray<float> heightMap;
 		heightMap.Init(1, pWidth * pWidth);
@@ -207,9 +205,6 @@ namespace DiamondSquare
 			UE_LOG(LogTemp, Error, TEXT("Midpoint Displacement 2D: Map size is not equal to (1 + 2^n)"));
 			return heightMap;
 		}
-
-		//You can also try not setting a seed
-		FMath::RandInit(pSeed);
 
 		//Set corners random value between 0 and 1
 		heightMap[GetID(pWidth, 0, 0)]						= FMath::FRand();

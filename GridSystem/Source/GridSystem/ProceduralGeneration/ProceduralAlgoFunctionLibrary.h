@@ -14,10 +14,10 @@
 
 /**
  * 2D Array index formula:
- *		- Row Major	= (X * width) + Y
- *		- Col Major	= (Y * height) + X
+ *		- Row Major	= (X * height) + Y
+ *		- Col Major	= (Y * width) + X
  *
- * 3D Array index formula:
+ * 3D Array index formula: (!!Need to be checked)
  *		- Row Major	= (X * height * depth) + (Y * depth) + Z 
  *		- Col Major	= (Z * width * height) + (Y * height) + X
  */
@@ -98,13 +98,32 @@ public:
 #pragma region MidpointDisplacement
 
 	/*
-	* The size of the map have to be 1 + 2^n for proper use.
+		The width of the map have to be 1 + 2^n for proper use.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|MidpointDisplacement")
-	static TArray<float> MidpointDisplacementMap2D(int32 Width, int32 Seed, float Spread, float SpreadFactor);
+	static TArray<float> MidpointDisplacementMap2D(int32 Width, float Spread, float SpreadFactor);
 
+	/*
+		The width of the map have to be 1 + 2^n for proper use.
+	*/
 	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|MidpointDisplacement")
-	static TArray<float> DiamondSquareMap2D(int32 Width, int32 Seed, float Roughness);
+	static TArray<float> DiamondSquareMap2D(int32 Width, float Roughness);
+
+#pragma endregion
+
+#pragma region CellularAutomata
+
+	/*
+		Return Array of 0 (black) and 1 (white)
+		
+		Recommendation for better use:
+		NoiseDensity:	Value range [0, 1], if rand > NoiseDensity then v = White
+		Iteration:		Value above or equal to 1
+		MorphFactor:	Value range [0, 8], if BlackCountAroundTile > MorphFactor then Tile = Black
+		FillBorder:		If pixel is next to map bounds, set pixel to 0;
+	*/
+	UFUNCTION(BlueprintCallable, Category = "ProceduralGeneration|CellularAutomata")
+	static TArray<float> CellularAutomata(int32 Width, int32 Height, float NoiseDensity, int32 Iterations, int32 MorphFactor, bool FillBorder);
 
 #pragma endregion
 };

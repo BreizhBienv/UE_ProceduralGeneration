@@ -6,6 +6,7 @@
 #include "CustomPerlinNoise.h"
 #include "CustomWorleyNoise.h"
 #include "MidpointDisplacement.h"
+#include "CellularAutomata.h"
 
 #include "RHICommandList.h"
 #include "Rendering/Texture2DResource.h"
@@ -150,14 +151,23 @@ TArray<float> UProceduralAlgoFunctionLibrary::WorleyNoiseMap3D(int32 Width, int3
 
 #pragma region MidpointDisplacement
 
-TArray<float> UProceduralAlgoFunctionLibrary::MidpointDisplacementMap2D(int32 Width, int32 Seed, float Spread, float SpreadFactor)
+TArray<float> UProceduralAlgoFunctionLibrary::MidpointDisplacementMap2D(int32 Width, float Spread, float SpreadFactor)
 {
-    return MidpointDisplacement::Map(Width, Seed, Spread, SpreadFactor);
+    return MidpointDisplacement::Map(Width, Spread, SpreadFactor);
 }
 
-TArray<float> UProceduralAlgoFunctionLibrary::DiamondSquareMap2D(int32 Width, int32 Seed, float Roughness)
+TArray<float> UProceduralAlgoFunctionLibrary::DiamondSquareMap2D(int32 Width, float Roughness)
 {
-    return DiamondSquare::Map(Width, Seed, Roughness);
+    return DiamondSquare::Map(Width, Roughness);
+}
+
+#pragma endregion
+
+#pragma region CellularAutomata
+
+TArray<float> UProceduralAlgoFunctionLibrary::CellularAutomata(int32 Width, int32 Height, float NoiseDensity, int32 Iterations, int32 MorphFactor, bool FillBorder)
+{
+    return CellularAutomata::Map(Width, Height, NoiseDensity, Iterations, MorphFactor, FillBorder);
 }
 
 #pragma endregion

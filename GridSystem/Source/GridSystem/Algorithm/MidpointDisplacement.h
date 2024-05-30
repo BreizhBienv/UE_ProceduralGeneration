@@ -12,7 +12,7 @@
 */
 namespace MidpointDisplacement
 {
-	TArray<float> Map(int32 pWidth, int32 pSeed, float pSpread, float pSpreadFactor);
+	TArray<float> Map(int32 pWidth, float pSpread, float pSpreadFactor);
 }
 
 
@@ -21,10 +21,11 @@ namespace MidpointDisplacement
 * https://learn.64bitdragon.com/articles/computer-science/procedural-generation/the-diamond-square-algorithm
 * https://www.youtube.com/watch?v=4GuAV1PnurU&t=48s
 * https://www.youtube.com/watch?v=qNoSliX_6Gc&t=298s
+* https://www.youtube.com/watch?v=bs0BQk2hH6I
 */
 namespace DiamondSquare
 {
-	TArray<float> Map(int32 pWidth, int32 pSeed, float pRoughness);
+	TArray<float> Map(int32 pWidth, float pRoughness);
 }
 
 #endif
