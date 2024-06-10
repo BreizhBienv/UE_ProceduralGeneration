@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class GridSystemTarget : TargetRules
+public class ProceduralGenEditorTarget : TargetRules
 {
-	public GridSystemTarget( TargetInfo Target) : base(Target)
+	public ProceduralGenEditorTarget( TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
+		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
-		ExtraModuleNames.Add("GridSystem");
+		ExtraModuleNames.Add("ProceduralGen");
 	}
 }

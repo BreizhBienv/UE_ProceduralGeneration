@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class GRIDSYSTEM_API APerlinMapGenerator : public AActor
+class PROCEDURALGEN_API APerlinMapGenerator : public AActor
 {
 	GENERATED_BODY()
 

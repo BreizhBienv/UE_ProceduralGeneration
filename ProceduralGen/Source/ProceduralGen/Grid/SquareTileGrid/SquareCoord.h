@@ -7,7 +7,7 @@
 #include "SquareCoord.generated.h"
 
 USTRUCT(BlueprintType)
-struct GRIDSYSTEM_API FSquareCoord
+struct PROCEDURALGEN_API FSquareCoord
 {
 	GENERATED_BODY()
 

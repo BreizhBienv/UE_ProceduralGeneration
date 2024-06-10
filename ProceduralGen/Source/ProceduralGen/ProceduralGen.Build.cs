@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class GridSystem : ModuleRules
+public class ProceduralGen : ModuleRules
 {
-	public GridSystem(ReadOnlyTargetRules Target) : base(Target)
+	public ProceduralGen(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
@@ -14,10 +14,10 @@ public class GridSystem : ModuleRules
 
         PublicIncludePaths.AddRange( new string[]
         {
-            "GridSystem/Generics/",
-            "GridSystem/Grid/",
-            "GridSystem/Algorithm/",
-            "GridSystem/ProceduralGeneration/",
+            "ProceduralGen/Generics/",
+            "ProceduralGen/Grid/",
+            "ProceduralGen/Algorithm/",
+            "ProceduralGen/ProceduralGeneration/",
 
             // ... add public include paths required here ...
         });

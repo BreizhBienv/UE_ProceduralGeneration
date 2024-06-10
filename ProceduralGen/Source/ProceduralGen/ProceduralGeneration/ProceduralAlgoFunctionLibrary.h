@@ -26,7 +26,7 @@
 * 
 */
 UCLASS()
-class GRIDSYSTEM_API UProceduralAlgoFunctionLibrary : public UBlueprintFunctionLibrary
+class PROCEDURALGEN_API UProceduralAlgoFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

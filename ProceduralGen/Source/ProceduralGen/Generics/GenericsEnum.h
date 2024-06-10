@@ -9,7 +9,7 @@
 template<typename TEnum>
 static FORCEINLINE FString GetEnumValueAsString(const FString& Name, TEnum Value)
 {
-    FString fullName = "/Script/GridSystem." + Name;
+    FString fullName = "/Script/ProceduralGen." + Name;
     const UEnum* enumPtr = FindObject<UEnum>(nullptr, *fullName, true);
     if (!enumPtr) return FString("Invalid");
     return enumPtr->GetNameByValue((int64)Value).ToString();

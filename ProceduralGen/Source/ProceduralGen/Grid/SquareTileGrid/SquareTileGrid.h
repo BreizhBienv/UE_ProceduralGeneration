@@ -8,7 +8,7 @@
 #include "SquareTileGrid.generated.h"
 
 UCLASS()
-class GRIDSYSTEM_API ASquareTileGrid : public AActor
+class PROCEDURALGEN_API ASquareTileGrid : public AActor
 {
 	GENERATED_BODY()
 	

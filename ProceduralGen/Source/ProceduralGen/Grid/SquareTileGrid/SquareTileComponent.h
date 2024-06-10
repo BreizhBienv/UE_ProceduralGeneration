@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class GRIDSYSTEM_API USquareTileComponent : public UStaticMeshComponent
+class PROCEDURALGEN_API USquareTileComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 	

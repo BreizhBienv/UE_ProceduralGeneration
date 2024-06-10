@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "GridSystemGameModeBase.generated.h"
+#include "ProceduralGenGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GRIDSYSTEM_API AGridSystemGameModeBase : public AGameModeBase
+class PROCEDURALGEN_API AProceduralGenGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
