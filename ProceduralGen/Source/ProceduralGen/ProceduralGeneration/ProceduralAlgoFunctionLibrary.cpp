@@ -11,6 +11,8 @@
 #include "RHICommandList.h"
 #include "Rendering/Texture2DResource.h"
 
+#pragma region Utils
+
 UTexture2D* UProceduralAlgoFunctionLibrary::TextureFrom2DNoiseMap(int32 MapWidth, int32 MapHeight, const TArray<float>& NoiseMap)
 {
     //initialize texture
@@ -32,18 +34,44 @@ UTexture2D* UProceduralAlgoFunctionLibrary::TextureFrom2DNoiseMap(int32 MapWidth
 
     for (uint32 i = 0; i < totalPixels; i++)
     {
-        float noise = NoiseMap[i];
-
-        textureData[i * 4]      = noise * 255;
-        textureData[i * 4 + 1]  = noise * 255;
-        textureData[i * 4 + 2]  = noise * 255;
-        textureData[i * 4 + 3]  = noise * 255;
+        textureData[i * 4]      = NoiseMap[i] * 255;
+        textureData[i * 4 + 1]  = NoiseMap[i] * 255;
+        textureData[i * 4 + 2]  = NoiseMap[i] * 255;
+        textureData[i * 4 + 3]  = NoiseMap[i] * 255;
     }
 
     dynamicTexture->UpdateTextureRegions(0, 1, textureRegion, srcPitch, 4, textureData);
 
     return dynamicTexture;
 }
+
+TArray<float> UProceduralAlgoFunctionLibrary::RemapArray(const TArray<float>& Array, const FVector2D& Old, const FVector2D& New)
+{
+    TArray<float> remapped;
+    for (float v : Array)
+        remapped.Add(FMath::GetMappedRangeValueClamped(Old, New, v));
+
+    return remapped;
+}
+
+float InvLerpInt(int32 From, int32 To, int32 V)
+{
+    return (V - From) / (To - From);
+}
+
+TArray<int32> UProceduralAlgoFunctionLibrary::RemapIntArray(const TArray<int32>& Array, int32 OldMin, int32 OldMax, int32 NewMin, int32 NewMax)
+{
+    TArray<int32> remapped;
+    for (int32 v : Array)
+    {
+        float rel = InvLerpInt(OldMin, OldMax, v);
+        remapped.Add(FMath::Lerp(NewMin, NewMax, rel));
+    }
+
+    return remapped;
+}
+
+#pragma endregion
 
 #pragma region PerlinNoise
 

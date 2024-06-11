@@ -11,6 +11,7 @@
 * https://en.wikipedia.org/wiki/Perlin_noise
 * https://rtouti.github.io/graphics/perlin-noise-algorithm
 * https://www.youtube.com/watch?v=kCIaHqb60Cw&t=230s
+* https://github.com/keijiro/PerlinNoise/blob/master/Assets/Perlin.cs#L134
 * Unreal Engine source code: File UnrealMath.cpp & UnrealMath.h
 * 
 * 

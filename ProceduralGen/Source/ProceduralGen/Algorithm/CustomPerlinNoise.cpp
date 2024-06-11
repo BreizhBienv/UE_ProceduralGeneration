@@ -52,14 +52,14 @@ namespace CustomPerlinNoise
         return p * p * p * (p * (p * 6.f - 15.f) + 10.f);
     }
 
-    float Grad1(int32 pHash, float pX)
+    float Grad(int32 pHash, float pX)
     {
         // Slicing Perlin's 3D improved noise would give us only scales of -1, 0 and 1; this looks pretty bad so let's use a different sampling
-        static const float Grad1Scales[16] = { -8 / 8, -7 / 8., -6 / 8., -5 / 8., -4 / 8., -3 / 8., -2 / 8., -1 / 8., 1 / 8., 2 / 8., 3 / 8., 4 / 8., 5 / 8., 6 / 8., 7 / 8., 8 / 8 };
+        static const float Grad1Scales[16] = { -8 / 8, -7 / 8, -6 / 8, -5 / 8, -4 / 8, -3 / 8, -2 / 8, -1 / 8, 1 / 8, 2 / 8, 3 / 8, 4 / 8, 5 / 8, 6 / 8, 7 / 8, 8 / 8 };
         return Grad1Scales[pHash & 15] * pX;
     }
 
-    float Grad2D(int32 pHash, float pX, float pY)
+    float Grad(int32 pHash, float pX, float pY)
     {
         switch (pHash & 7)
         {
@@ -75,131 +75,90 @@ namespace CustomPerlinNoise
         }
     }
 
-    float Grad3(int32 pHash, float pX, float pY, float pZ)
+    float Grad(int32 pHash, float pX, float pY, float pZ)
     {
-        switch (pHash & 15)
-        {
-            // 12 cube midpoints
-        case 0: return pX + pZ;
-        case 1: return pX + pY;
-        case 2: return pY + pZ;
-        case 3: return -pX + pY;
-        case 4: return -pX + pZ;
-        case 5: return -pX - pY;
-        case 6: return -pY + pZ;
-        case 7: return pX - pY;
-        case 8: return pX - pZ;
-        case 9: return pY - pZ;
-        case 10: return -pX - pZ;
-        case 11: return -pY - pZ;
-            // 4 vertices of regular tetrahedron
-        case 12: return pX + pY;
-        case 13: return -pX + pY;
-        case 14: return -pY + pZ;
-        case 15: return -pY - pZ;
-            // can't happen
-        default: return 0;
-        }
+        auto h = pHash & 15;
+        auto u = h < 8 ? pX : pY;
+        auto v = h < 4 ? pY : (h == 12 || h == 14 ? pX : pZ);
+        return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
     }
 
 
 
     float PerlinNoise(float pX)
     {
-        int32 fx = FastFloor(pX);
-
-        int32 xi = fx & 255;
-
-        float X = pX - fx;
-        float Xm1 = X - 1.f;
-
-        int32 A = perm[xi];
-        int32 B = perm[xi + 1];
-
-        float U = Fade(X);
+        int32 fxi = FastFloor(pX) & 0xff;
+        pX -= FastFloor(pX);
+        float u = Fade(pX);
 
         // 2.0 factor to ensure (-1, 1) range
-        return 2.0f * FMath::Lerp(Grad1(A, X), Grad1(B, Xm1), U);
+        return 2.f * FMath::Lerp(Grad(perm[fxi], pX), Grad(perm[fxi] + 1.f, pX - 1.f), u);
     }
 
     float PerlinNoise(float pX, float pY)
     {
-        int32 fx = FastFloor(pX);
-        int32 fy = FastFloor(pY);
-
         //Find unit cube that contains location
-        int32 xi = fx & 255;
-        int32 yi = fy & 255;
+        int32 fxi = FastFloor(pX) & 0xff;
+        int32 fyi = FastFloor(pY) & 0xff;
 
         //Find Relative x, y of location in unit cube
-        float X = pX - fx;
-        float Y = pY - fy;
-
-        float Xm1 = X - 1.f;
-        float Ym1 = Y - 1.f;
+        pX -= FastFloor(pX);
+        pY -= FastFloor(pY);
 
         //Comput fade curve for X and Y
-        float U = Fade(X);
-        float V = Fade(Y);
+        float u = Fade(pX);
+        float v = Fade(pY);
 
         //Hash coord of the square's corners
         //A = 0, B = 1
         const int32* P = perm;
-        int32 AA = P[xi] + yi;      //BottomLeft
-        int32 AB = AA + 1;          //TopLeft
-        int32 BA = P[xi + 1] + yi;  //BottomRight
-        int32 BB = BA + 1;          //TopRight
+        int32 AA = P[fxi] + fyi;        //BottomLeft
+        int32 AB = AA + 1;              //TopLeft
+        int32 BA = P[fxi + 1] + fyi;    //BottomRight
+        int32 BB = BA + 1;              //TopRight
 
         //Blend result of coords hashing
-        float result = FMath::Lerp(
-            FMath::Lerp(Grad2D(P[AA], X, Y), Grad2D(P[BA], Xm1, Y), U),
-            FMath::Lerp(Grad2D(P[AB], X, Ym1), Grad2D(P[BB], Xm1, Ym1), U),
-            V);
-
-        return result;
+        return FMath::Lerp(
+            FMath::Lerp(Grad(P[AA], pX, pY          ),  Grad(P[BA], pX - 1.f, pY        ), u),
+            FMath::Lerp(Grad(P[AB], pX, pY - 1.f    ),  Grad(P[BB], pX - 1.f, pY - 1.f  ), u),
+            v);
     }
 
     float PerlinNoise(float pX, float pY, float pZ)
     {
-        int32 fx = FastFloor(pX);
-        int32 fy = FastFloor(pY);
-        int32 fz = FastFloor(pZ);
+        int32 fxi = FastFloor(pX) & 0xff;
+        int32 fyi = FastFloor(pY) & 0xff;
+        int32 fzi = FastFloor(pZ) & 0xff;
 
-        int32 Xi = fx & 255;
-        int32 Yi = fy & 255;
-        int32 Zi = fz & 255;
+        pX -= FastFloor(pX);
+        pY -= FastFloor(pY);
+        pZ -= FastFloor(pZ);
 
-        float X = pX - fx;
-        float Y = pY - fy;
-        float Z = pZ - fz;
-
-        float Xm1 = X - 1.0f;
-        float Ym1 = Y - 1.0f;
-        float Zm1 = Z - 1.0f;
+        float u = Fade(pX);
+        float v = Fade(pY);
+        float w = Fade(pZ);
 
         const int32* P = perm;
-        int32 A = P[Xi] + Yi;
-        int32 AA = P[A] + Zi;	int32 AB = P[A + 1] + Zi;
+        int32 A = P[fxi] + fyi;
+        int32 AA = P[A] + fzi;	int32 AB = P[A + 1] + fzi;
 
-        int32 B = P[Xi + 1] + Yi;
-        int32 BA = P[B] + Zi;	int32 BB = P[B + 1] + Zi;
-
-        float U = Fade(X);
-        float V = Fade(Y);
-        float W = Fade(Z);
+        int32 B = P[fxi + 1] + fyi;
+        int32 BA = P[B] + fzi;	int32 BB = P[B + 1] + fzi;
 
         // Note: range is already approximately -1,1 because of the specific choice of direction vectors for the Grad3 function
         // This analysis (http://digitalfreepen.com/2017/06/20/range-perlin-noise.html) suggests scaling by 1/sqrt(3/4) * 1/maxGradientVectorLen, but the choice of gradient vectors makes this overly conservative
         // Scale factor of .97 is (1.0/the max values of a billion random samples); to be 100% sure about the range I also just Clamp it for now.
         return FMath::Clamp(0.97f *
-            FMath::Lerp(FMath::Lerp(FMath::Lerp(Grad3(P[AA], X, Y, Z), Grad3(P[BA], Xm1, Y, Z), U),
-                FMath::Lerp(Grad3(P[AB], X, Ym1, Z), Grad3(P[BB], Xm1, Ym1, Z), U),
-                V),
-                FMath::Lerp(FMath::Lerp(Grad3(P[AA + 1], X, Y, Zm1), Grad3(P[BA + 1], Xm1, Y, Zm1), U),
-                    FMath::Lerp(Grad3(P[AB + 1], X, Ym1, Zm1), Grad3(P[BB + 1], Xm1, Ym1, Zm1), U),
-                    V),
-                W
-            ),
+            FMath::Lerp(
+                FMath::Lerp(
+                    FMath::Lerp(Grad(P[AA], pX, pY, pZ       ), Grad(P[BA], pX - 1.f, pY, pZ         ), u),
+                    FMath::Lerp(Grad(P[AB], pX, pY - 1.f, pZ ), Grad(P[BB], pX - 1.f, pY -  1.f, pZ  ), u),
+                    v),
+                FMath::Lerp(
+                    FMath::Lerp(Grad(P[AA + 1], pX, pY, pZ - 1.f        ), Grad(P[BA + 1], pX - 1.f, pY, pZ - 1.f       ), u),
+                    FMath::Lerp(Grad(P[AB + 1], pX, pY - 1.f, pZ - 1.f  ), Grad(P[BB + 1], pX - 1.f, pY - 1.f, pZ - 1.f ), u),
+                    v),
+                w),
             -1.0f, 1.0f);
     }
 
